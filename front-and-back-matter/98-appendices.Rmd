@@ -5,20 +5,89 @@
 <!-- If you feel it necessary to include an appendix, it goes here. The first appendix should include the commands above. -->
 
 
-# The First Appendix
+# Backpropagation with Binary Cross Entropy {#chap:appendix_a}
+Let's consider a simple binary classification task, it is common to use a network with a single logistic output with the binary cross-entropy loss function and for the sake of simplicity let's assume that there is only one hidden layer.
+$$
+\begin{aligned}
+BCE=-\sum_{i=1}^{n o u t}\left(y_i \log \left(\hat{y}_i \right)+\left(1-y_i\right) \log \left(1-\hat{y}_i\right)\right)
+\end{aligned}
+$$
 
-This first appendix includes an R chunk that was hidden in the document (using `echo = FALSE`) to help with readibility:
+where $y$ is the ground truth and $\hat{y}$ is the output of the network. After having the loss function let's continue with the forward pass.
 
-**In 02-rmd-basics-code.Rmd**
+$$
+\begin{aligned} 
+a_{k} &= h_{k-1} w_{k} + b_k \\
+h_k &= f(a_{k})
+\end{aligned}
+$$
 
-```{r ref.label='chunk-parts', eval=FALSE, echo = TRUE}
-```
+where, $w_k$ is the weight, $b_{k}$ is the bias term, $h_k$ is the output of the layer (which means that $h_0 = X$ and $h_2 = \hat{y}$) and f is the non linear function. Please note that for last layer logistic function is used whereas for hidden layer reLU is used as non linear functions.\
+We can compute the derivative of the weights by using the chain rule.
 
-**And here's another one from the same chapter, i.e. Chapter \@ref(code):**
+$$
+\begin{aligned} 
+\frac{\partial BCE}{\partial w_{2}}=\frac{\partial BCE}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial a_{2}} \frac{\partial a_{2}}{\partial w_{2}}
+\end{aligned}
+$$
 
-```{r ref.label='oxford-logo-rotated', eval=FALSE, echo = TRUE}
-```
+Computing each factor in the term, we have:
+$$
+\begin{aligned}
+\frac{\partial BCE}{\partial \hat{y}} &=\frac{-y}{\hat{y}}+\frac{1-y}{1-\hat{y}} \\
+&=\frac{\hat{y}-y}{\hat{y}\left(1-\hat{y}\right)} \\
+\frac{\partial \hat{y}}{\partial a_{2}} &=\hat{y}\left(1-\hat{y}\right) \\
+\frac{\partial a_{2}}{\partial w_{2}} &=h_{1}
+\end{aligned}
+$$
+which gives us:
+$$
+\frac{\partial BCE}{\partial w_{2}}=h_{1}^T\left(\hat{y}-y\right)
+$$
+Derivative of the $w_1$ with respect to loss function can be calculated as the following:
 
+$$
+\begin{aligned} 
+\frac{\partial BCE}{\partial w_{1}}=\frac{\partial BCE}{\partial h_1} \frac{\partial h_1}{\partial a_{1}} \frac{\partial a_{1}}{\partial w_{1}}
+\end{aligned}
+$$
+Compute each factor in the term again, we have:
 
+$$
+\begin{aligned}
+\frac{\partial BCE}{\partial h_1} &= \frac{\partial BCE}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial a_{2}} \frac{\partial a_{2}}{\partial h_{1}}  \\
+&= \left(\hat{y}-y\right) w_{2} \\
+\frac{\partial h_1}{\partial a_{1}} &=f'(a_1) \\
+\frac{\partial a_{1}}{\partial h_{1}} &=X
+\end{aligned}
+$$
+which gives us:
+$$
+\begin{aligned}
+\frac{\partial BCE}{\partial w_{1}}= \left(X\right)^T\left(\hat{y}-y\right)\left(w_{2}^T\right) \odot f'(a_1)
+\end{aligned}
+$$
+where $\odot$ is element-wise multiplication. Similarly, bias terms can be calculated by following:
 
-# The Second Appendix, for Fun
+$$
+\begin{aligned} 
+\frac{\partial BCE}{\partial b_{2}}&=\frac{\partial BCE}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial a_{2}} \frac{\partial a_{2}}{\partial b_{2}} \\
+&= \left(\hat{y}-y\right)
+\end{aligned}
+$$
+
+$$
+\begin{aligned} 
+\frac{\partial BCE}{\partial b_{1}}&=\frac{\partial BCE}{\partial h_1} \frac{\partial h_1}{\partial a_{1}} \frac{\partial a_{1}}{\partial b_{1}} \\
+&= \left(\hat{y}-y\right)\left(w_{2}^T\right) \odot f'(a_1)
+\end{aligned}
+$$
+After having all these results, we can simply update the parameters (weights and biases) by using gradient descent and its variants as follows:
+
+$$
+\begin{aligned} 
+\text{parameter} &= \text{parameter} - \text{step size} \times \frac{\partial BCE}{\partial \text(parameter)}  \\
+\end{aligned}
+$$
+
+# Reproducibility

@@ -1,0 +1,196 @@
+---
+#########################################
+# options for knitting a single chapter #
+#########################################
+output:
+  bookdown::pdf_document2:
+    template: templates/brief_template.tex
+    citation_package: biblatex
+  bookdown::html_document2: default
+  bookdown::word_document2: default
+documentclass: book
+bibliography: [bibliography/references.bib, bibliography/additional-references.bib]
+---
+
+# Theoretical Foundations {#chap:chapter_1}
+
+\minitoc <!-- this will include a mini table of contents-->
+
+## Backpropagation
+BP is one of the first algorithms that show ANNs could learn well-hidden representations. Many studies showed that ANNs trained with BP can capture similar information as biological neural networks (e.g. specific nodes learn the edges, corners). We need three components for BP, a dataset that is composed of input-output pairs, a network that is consisting parameters (weights and biases) and allows the input flow through the network to have output and we need a loss function to measure the difference between the output of the network and ground truth that we have from the dataset.\
+BP helps to compute the gradients of the loss function (a measure of difference) concerning the parameters of neural networks by using the chain rule. These gradients show how much the parameter needs to change (in a positive or a negative direction) to minimize the loss function by propagating the error. After efficiently calculating the gradients, parameters can be updated by using gradient descent or its variants. \
+Although BP is an older idea, it earned popularity with \cite{Rumelhart:1986we} because this study presented how BP can be used to make a network to learn the representations. After this popularity many practical and theoretical papers are published which investigate the dynamics of BP. It would be repeat and infeasible to show all the aspects again, however for the sake of completeness and to make a smoother transition from BP to DFA it is beneficial to have visual and mathematical explanations which show how error and weights are propagated. For the mathematical foundations, a binary classification task will be demonstrated with binary cross-entropy loss as an example in appendix \ref{chap:appendix_a}. This example is not chosen arbitrarily, indeed the parity problem that is imitated by MNIST is a binary classification problem. In addition to this, equations from appendix \ref{chap:appendix_a} are used to implement BP from scratch to have more control over the process, then the same implementation is modified to obtain DFA. The same set of steps are valid for different loss functions and activation functions, only the calculations will be slightly different but the general idea is the same which is obtaining the gradients by calculating the derivative of the loss function concerning the parameters.
+
+```{r BP-Error, fig.cap="Error Transportation in Backpropagation", fig.align='center', out.width='30%', echo=FALSE}
+knitr::include_graphics("figures/BP.png")
+```
+In figure \ref{fig:BP-Error} we have a simple network with only a hidden layer which shows the error transportation configuration in BP. $W_i$ are the weights, $h_i$ are the output of the hidden layers that is denoted as $i$, $\hat{y}$ is the output of the network and $y$ is the ground truth, for the sake of simplicity, biases are not showed in this figure. It is important to note that in BP, the transpose of weights is propagated. In literature, this issue is known as the weight transport problem and it is one of the most criticized disadvantages of BP.
+
+### Drawbacks of BP
+
+We know that ANNs are inspired by biological neurons. However recent studies showed that BP is not exactly how biological neurons learn. That is why many alternative algorithms are proposed by addressing these limitations of BP. This brings a term called biological plausibility of an algorithm which indicates the consistency of the algorithm with existing biological, medical, and neuroscientific knowledge. In the light of this term we can put in order the drawbacks of BP as the following:
+\begin{itemize}
+    \item \textbf{Biologically implausibility:}
+    \begin{itemize}
+        \item The BP computation is purely linear whereas biological neurons interleave linear and non-linear operations.
+        \item BP needs precise knowledge of derivatives of the non-linearities at the operating point used in the corresponding feedforward computation on the feedforward path.
+        \item BP has to use exact symmetric weights of the feedforward connections.
+        \item Real neurons communicate by binary values (spikes), not by clean continuous values.
+        \item The computation has to be precisely clocked to alternate between feedforward and BP phases.
+        \item It is not clear where the output targets would come from.
+        \cite{bengio2016biologically, lee2015difference} 
+    \end{itemize}  
+    \item \textbf{Vanishing or Exploding Gradients}
+    \item \textbf{Lack of Parallel Processing} \cite{ma2019hsic}
+\end{itemize} \
+Some of these drawbacks can be handled with simple interventions. For instance, implementing gradient clipping or using different activation functions might solve exploding gradients and vanishing gradients problems. However, they may happen frequently in vanilla BP and they must be taken into consideration while training ANNs. On the other hand, some of the drawbacks can not be handled with simple modifications. For instance, BP is a sequential process and there are locking mechanisms that ensure none of the processes is executed before its preceding. This makes BP infeasible for parallel processing because each execution has to wait for its preceding and deeper and larger networks training can be computationally expensive. \
+Biological plausibility is important because of a couple of reasons. We know that ANNs are inspired by biological neurons and biological plausibility refers to consistency between BP and biological knowledge about the neurons of a brain so it is interesting to examine the dissimilarity or similarity among them. Besides, there is a field that is the intersection of neuroscience and deep learning so it is important to understand the biological plausibility feature of the algorithms, especially for this field. Furthermore, even though nowadays ANNs might outperform the brain in a specific task, we are still far away from fully mimicking the brain, in other words, most of the time ANNs are very good on a task which they are trained, but they are not diverse and they can be easily tricked with some kinds of attacks like adversarial ones. Investigating these features of algorithms may open the doors of diverse ANN which is not specialized on a single task or it might make them more robust to attacks. \
+Alternative algorithms address some of the drawbacks of BP and they propose a solution to them but they also demonstrate some of them. However, these algorithms can be considered as one or more steps closer to more biologically plausible and more robust algorithms.
+
+## Direct Feedback Alignment
+So far we have seen how the error is propagated in BP sequentially through a network with the backward pass. Unlike BP, DFA uses a different way to propagate the error. This way uses a random matrix instead of the transpose of the weight matrix and by doing so it brings a solution to the weight transport problem. \
+Before explaining how DFA works, it is better to investigate the feedback alignment (FA) algorithm since DFA is the extension of FA. \
+In \cite{lillicrap2014random}, authors proved that to obtain learning in ANNs, precise symmetric weights are not required, without these matrices BP-like learning can be obtained. Any random matrix under some conditions can provide the learning. Implicit dynamics in the standard forward weight updates encourage an alignment between weights and the random matrix. In other words, a random matrix pushes the network in roughly the same direction as BP would. They supported this hypothesis with some experiments on a linear problem and MNIST classification task and empirical results demonstrate that FA is successful on training the network and it has similar performance results as BP on these tasks. \
+To extend FA to DFA we need to slightly change the error propagation mechanism of FA. In FA although the error is propagated through a random matrix, the backward process is still sequential. DFA extends this idea and propagates the random matrix in parallel to each layer. In other words, DFA takes the loss and distribute it globally to all layers without requiring sequential step. It also creates an opportunity to parallelize the computation which might speed up the training process.\ 
+```{r DFA-Error, fig.cap="Error Transportation in Direct Feedback Alignment", fig.align='center', out.width='65%', echo=FALSE}
+knitr::include_graphics("figures/DFA.png")
+```
+In figure \ref{fig:DFA-Error} we can see the error transportation configurations for FA and DFA. This figure is the same as the one in \cite{nøkland2016direct} but shows only one hidden layer. In fact, with only one hidden layer FA and DFA are identical. \
+It is important to point out that, BP and DFA have different learning dynamics. BP calculates the gradients that point to the steepest descent in the loss function space. On the other hand, FA and DFA provide a different update direction but still descending. Even though they have different update directions, empirical results from \cite{lillicrap2014random, nøkland2016direct} showed that FA and DFA are as good as BP in terms of performance for specified tasks in these papers. In addition to this, ANNs that are trained with DFA show well separation for labels as in BP's hidden representations of the layers. We can observe this from the t-distributed stochastic neighbor embedding (t-SNE) visualizations of the hidden layers' representations. t-SNE is a method visualizing high-dimensional data which tries to keep the neighbor property in lower dimensions. \
+The new study is published which tests the applicability of DFA on modern deep learning tasks and architectures such as neural view synthesis, recommender systems, geometric learning, and natural language processing \cite{launay2020direct} because even though some of the alternative methods are compatible with BP in simple tasks like MNIST, they are not compatible or trainable on more complex tasks. Results showed that DFA successfully trains all these complex architectures with performance close to BP. This study supports that complex tasks can be solved without symmetric weight transport and it proves that DFA is suitable for more challenging problems. \
+After having the mathematical foundations of BP in appendix \ref{chap:appendix_a} transition to DFA is relatively easy. The forward pass is the same as BP whereas, in the backward pass, we need to replace the transpose of the weight matrix which is used to calculate the gradients with the random matrix. Let's use the same example as \ref{chap:appendix_a} to present how gradients are calculated in DFA. That means we have a simple binary classification task with binary cross-entropy loss and our network has only one hidden layer. In this setting, gradients of the weights can be calculated as the following:
+$$
+\frac{\partial BCE}{\partial w_{2}}=h_{1}^T\left(\hat{y}-y\right)
+$$
+There is no change in the calculations of gradients of the last layer, whereas for the hidden layer we have:
+$$
+\begin{aligned}
+\frac{\partial BCE}{\partial w_{1}}= \left(X\right)^T\left(\hat{y}-y\right)\left(B\right) \odot f'(a_1)
+\end{aligned}
+$$
+Please pay attention that $w_2^T$ is replaced with the random matrix $B$.\
+Update rules are the same as BP which means that gradient descent and its variants can be used.
+$$
+\begin{aligned} 
+\text{parameter} &= \text{parameter} - \text{step size} \times \frac{\partial BCE}{\partial \text(parameter)}  \\
+\end{aligned}
+$$
+With this tiny modification, DFA brings a solution to some of the drawbacks of BP such as using exact symmetric weights of the feedforward connections (weight transport problem), lack of parallel processing (random matrix can be propagated in parallel) and it is less likely to suffer from vanishing or exploding gradients than BP. Eventually, it propose us more biologically plausible training method. However, it suffers some of the drawbacks of BP too. For instance, computation is still purely linear, we still need precise knowledge of derivatives of the non-linearities, we still communicate by clean continuous values and it is not clear where the output targets would come from. Besides, DFA has an extra task to accomplish while training the ANN that is aligning with BP's error signal. This might spawn performance issues and DFA might lag behind BP most of the time.
+
+## Lazy Methods
+Theoretical results present that especially over-parameterized ANNs (not limited to these networks) trained with gradient-based methods can reach zero training loss with their parameters barely changing, the term lazy doesn't refer to the poor property of a method whereas it is called lazy because its parameters hardly move \cite{chizat2020lazy}.\
+Lazy methods are not in the center of the experiments so detailed explanations of these methods are out of scope in this study but they have been presented in \cite{DBLP:journals/corr/abs-2002-07400} and they fail to learn the parities in a more complex setting. Hence for the sake of completeness, they implemented too and it is crucial to specify at least a simple definition of them and how they are practically implemented.
+
+### Neural Tangent Kernel
+Previous studies demonstrated that at initialization ANNs are just gaussian processes in the infinite-width limit. This phenomenon connects ANNs to kernel methods. 
+Neural Tangent Kernel (NTK) is a kernel that describes the evolution of an ANN during the training phase, during this phase network function follows the kernel gradient of the functional loss, authors named this kernel as Neural Tangent Kernel (NTK). NTK is useful to explain the training of ANNs in function space rather than parameters space \cite{DBLP:journals/corr/abs-1806-07572}. \
+Empirical results demonstrated that the NTK regime performs worse than BP on standard tasks like MNIST. However NTK is still worth investigating further to understand ANNs' training dynamics since it brings a new perspective on the training phase.\
+Simple practical implementation of NTK is obtained with three steps. Initially, an extra layer is created with the same dimensions as the first layer, second in the forward pass concatenation of these two layers' parameters are given as input to the gated linear unit with $1$. Lastly, in parameters update extra layer is not considered. By doing this, we decoupled the gating from the linearity of the ReLU and we kept the gates fixed during training.
+
+### Random features
+Standard random features are where first layer weights are initialized randomly and the train only the second layer. These mechanisms are particularly good at approximating kernels. In \textbf{gaussian features} case we initialize the first layer weights using gaussian distribution whereas in \textbf{ReLU features} and \textbf{linear features} we initialize the first layer weights uniformly but in linear features, ReLU is not used as an activation function in the forward pass.
+
+## Optimizers
+Up to this point, we only mentioned superficially how we can use gradient descent and its variants to update the weights of a network. This part worths further investigation because many variants provide better convergence properties to find the minimum of the loss function and we may take advantage of these methods to have better performance on BP and DFA. These methods may spawn a significant impact on convergence speed and overall performance. As a reference to the following methods mostly \cite{DBLP:journals/corr/Ruder16} is used, it is a nice overview for the optimizers and it summarizes their advantages as well as challenges.
+
+### Gradient Descent
+Gradient descent (GD) is a first-order iterative optimization algorithm. It is the most used algorithm to optimize neural networks. It has three variants that depend on how much data we use to compute the gradients. \textbf{Batch gradient descent} computes the gradients for the entire dataset and performs only one update. \textbf{Stochastic gradient descent} (SGD) in contrast calculates gradients for each training example and performs parameter update for each of them. Lastly, \textbf{mini-batch gradient descent} calculates the gradients of mini-batches and performs updates for each mini-batches.
+GD is infeasible to implement for the datasets that do not fit in the memory whereas SGD performs too frequent updates which spawns high variance in parameters that cause fluctuation in the loss function. For our experiments, we used mini-batch gradient descent which takes the best of two methods but in the literature, the term SGD is used more where in reality mini-batch gradient descent is used, the same tradition will be followed in this study too. Update rule of mini-batch gradient descent is the following:
+$$
+\theta_{t+1}=\theta_t-\eta \cdot \nabla_{\theta} J\left(\theta ; x^{(i: i+n)} ; y^{(i: i+n)}\right)
+$$
+where $\theta$ is the parameters of the network, $\eta$ is the learning rate or step size, $\nabla_{\theta}$ is the gradients of the parameters and $J\left(\theta ; x^{(i: i+n)} ; y^{(i: i+n)}\right)$ is the loss function for mini-batch $i$ to $i+n$.\
+There are couple of challenges in GD because it doesn't always guarantee good convergence:
+\begin{itemize}
+  \item Choosing a proper learning rate is difficult, small learning rates may take too much time to converge whereas large learning rates may spawn fluctuations in loss function and it may even diverge.
+  \item Algorithm doesn't guarantee the global minimum. It can easily be stuck in the local minimum for highly non-convex loss functions that are common for deep learning tasks.
+  \item Same learning rate is applied to all parameters but we may want to update the parameter by their frequencies.
+\end{itemize}
+
+#### Momentum
+SGD has difficulties finding the direction in valleys because the gradients on these areas will be either zero or very close to zero so it will slow down and make hesitant progress. These areas are very common around the local minimum. Momentum is an idea that dampens the oscillations in the relevant direction. It is accomplished by adding a fraction $\gamma$ of the update vector of the past time step. This fraction is usually set to $0.9$. This term usually leads to faster convergence and speeds up the iterations.
+$$
+\begin{aligned}
+v_{t} &=\gamma v_{t-1}+\eta \nabla_{\theta} J(\theta) \\
+\theta_{t+1} &=\theta_t-v_{t}
+\end{aligned}
+$$
+Momentum follows the direction of the gradients blindly, \textbf{nesterov accelerated gradient} (NAG) is a way of giving our method to intuition by approximating the next position of the parameters with $\theta -\gamma v_{t-1}$, with this we hope to slow down before the hill slopes up. In other words, first, as in the momentum method, we make a big jump in the direction of previous gradients then we measure the gradient where we end up and make a correction. The new update rule becomes:
+$$
+\begin{aligned} v_{t} &=\gamma v_{t-1}+\eta \nabla_{\theta} J\left(\theta-\gamma v_{t-1}\right) \\ 
+\theta_{t+1} &=\theta_t-v_{t} \end{aligned}
+$$
+
+### Adaptive Methods
+Two main drawbacks of SGD are; tuning the learning rate is difficult and we use the same learning rate for each parameter. Adaptive methods offer solutions to these problems. They use smart ways to modify the learning rate which may differ from parameter to parameter and some of them even remove the need of setting the learning rate. However, they are still gradient-based algorithms with some modifications.
+
+#### Adagrad
+In vanilla SGD and SGD with momentum, we used the same learning rate for each parameter. On the contrary, adagrad adapts the learning rates for each parameter, it performs larger updates for infrequent parameters and smaller updates for frequent parameters. To do this, it updates the learning rate at each time step $t$ for each parameter based on past gradients of them.
+$$
+\theta_{t+1}=\theta_{t}-\frac{\eta}{\sqrt{G_{t}+\epsilon}} \odot g_{t}
+$$
+$G_t$ contains the sum of squares of the past gradients for all parameters. $g_t$ is the gradients of all parameters at time step $t$ and $\epsilon$ is the smoothing constant to avoid zero division and it is usually set to $10^{-8}$. With this update rule, the learning rate is modified at each time step. At the same time, $G_t$ is getting larger with each time step since we only add positive terms which makes the learning rate very small and the algorithm is not able to learn anymore in advancing time steps.
+
+#### Adadelta
+Adadelta is an extension of Adagrad which tries to solve the decreasing learning rate problem and tries to remove the need for tuning the learning rate manually \cite{zeiler2012adadelta}. Instead of using the squares of all past gradients, Adadelta sets a moving window of gradient updates and by doing so it continues learning even after many iterations. It does by storing the exponentially decaying average of the squared gradients.
+$$
+E\left[g^{2}\right]_{t}=\rho E\left[g^{2}\right]_{t-1}+(1-\rho) g_{t}^{2}
+$$
+$E\left[g^{2}\right]_{t}$ is the running average, $\rho$ is the decay constant which is similar to momentum term (it is mostly set to around $0.9$ like momentum). The demonitor of the update rule of adadelta is very similar to adagrad, only difference is $G_{t}$ is replaced with $E\left[g^{2}\right]_{t}$. The term $\sqrt{E\left[g^{2}\right]_{t}+\epsilon}$ can be rephrased as root mean squares of the previous gradients up to time $t$. 
+$$
+\operatorname{RMS}[g]_{t}=\sqrt{E\left[g^{2}\right]_{t}+\epsilon}
+$$
+where $\epsilon$ is a smoothing constant for avoiding any problem in the denominator. By using this term we can change the update rule of Adagrad to the following:
+$$
+\theta_{t+1}=\theta_{t}-\frac{\eta}{R M S[g]_{t}} \odot g_{t}
+$$
+For clarity we can rephrase the update rule as follows:
+$$
+\theta_{t+1} = \theta_{t} + \Delta \theta_{t} \\
+$$
+where;
+$$\Delta \theta_{t} = -\frac{\eta}{R M S[g]_{t}} \odot g_{t}$$
+Authors of \cite{zeiler2012adadelta} pointed out that parameters updates in SGD, momentum and Adagrad doesn't match with the units of the parameters. The units relate the gradients, not the parameters. To overcome this issue they defined exponentially decaying average of parameters instead of gradients.
+$$
+E\left[\Delta \theta^{2}\right]_{t}=\rho E\left[\Delta \theta^{2}\right]_{t-1}+(1-\rho) \Delta \theta_{t}^{2}
+$$
+The root mean squared error of the parameters is:
+$$
+\operatorname{RMS}[\Delta \theta]_{t}=\sqrt{E\left[\Delta \theta^{2}\right]_{t}+\epsilon}
+$$
+Since $\operatorname{RMS}[\Delta \theta]_{t}$ is unknown at time step $t$, it is approximated with previous time step. Learning rate is replaced with this term which yields the update rule of Adadelta:
+$$
+\theta_{t+1}=\theta_{t} - \frac{R M S[\Delta \theta]_{t-1}}{R M S[g]_{t}} g_{t}
+$$
+
+#### RMSProp
+RMSProp is another method that is offered to solve the decreasing learning rate problem of adagrad. It is proposed by Geoffrey Hinton in his neural networks for machine learning class. It is identical to the first update rule of Adadelta that is:
+$$
+\begin{aligned}
+E\left[g^{2}\right]_{t}=\rho E\left[g^{2}\right]_{t-1}+(1-\rho) g_{t}^{2} \\
+\theta_{t+1}=\theta_{t}-\frac{\eta}{\sqrt{E\left[g^{2}\right]_{t}+\epsilon}} \odot g_{t}
+\end{aligned}
+$$
+Similar to momentum constant, it is suggested to set $\rho$ to $0.9$ and $\epsilon$ is the smoothing constant similar to previous methods update rules.
+
+#### ADAM
+Adam is another adaptive method that adjusts the learning rates for each parameter and it stores also an exponentially decaying average of the past gradients as well as past squared gradients similar to momentum. It combines the best properties of adagrad and RMSProp algorithms.
+$$
+\begin{aligned}
+m_{t} &=\beta_{1} m_{t-1}+\left(1-\beta_{1}\right) g_{t} \\
+v_{t} &=\beta_{2} v_{t-1}+\left(1-\beta_{2}\right) g_{t}^{2}
+\end{aligned}
+$$
+where $m_t$ is the estimate of the first moment of the gradients and $v_t$ is the estimate of the second moment. The authors noticed that with zero initialization these two terms are biased towards zero. Therefore they proposed bias corrected to overcome this problem. It is suggested to set defaults values for $\beta_1$ and $\beta_2$ as $0.9$ and $0.999$.
+
+$$
+\begin{aligned}
+\hat{m}_{t} &=\frac{m_{t}}{1-\beta_{1}^{t}} \\
+\hat{v}_{t} &=\frac{v_{t}}{1-\beta_{2}^{t}}
+\end{aligned}
+$$
+Then the update rule is very similar to Adadelta and RMSProp that is:
+
+$$
+\theta_{t+1}=\theta_{t}-\frac{\eta}{\sqrt{\hat{v}_{t}}+\epsilon} \hat{m}_{t}
+$$

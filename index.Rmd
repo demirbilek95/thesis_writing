@@ -17,22 +17,20 @@ knit: (function(input, ...) {
 ## thesis metadata ##
 #####################
 title: |
-  `oxforddown`: \
-  An Oxford University Thesis \
-  Template for R Markdown
-author: Author Name
-college: Your College
-university: University of Oxford
-university-logo: templates/beltcrest.pdf
+  Dynamics of Learning Beyond Stochastic Gradient Descent \
+author: Doğan Can Demirbilek
+#college: Your College
+university: University of Trieste
+university-logo: figures/logo.jpeg
 university-logo-width: 5cm
-submitted-text: A thesis submitted for the degree of
-degree: Doctor of Philosophy
-degreedate: Michaelmas 2018
+#submitted-text: A thesis submitted for the degree of
+degree: Master in Data Science and Scientific Computing
+degreedate: December 2021
 abstract: |
   `r paste(readLines("front-and-back-matter/_abstract.Rmd"), collapse = '\n  ')`
 acknowledgements: |
   `r paste(readLines("front-and-back-matter/_acknowledgements.Rmd"), collapse = '\n  ')`
-dedication: For Yihui Xie
+dedication: \emph{To my family}
 abbreviations: |
   `r paste(readLines("front-and-back-matter/_abbreviations.Rmd"), collapse = '\n  ')`
 
@@ -53,20 +51,21 @@ word-count: "10,052"
 
 # if you want to use a different title page altogether, provide a path to a 
 # .tex file here and it will override the default Oxford one
-# alternative-title-page: templates/alt-title-page-example.tex
-
+alternative-title-page: templates/alternative_cover.tex
+ 
 ### abbreviations ###
 abbreviations-width: 3.2cm
 abbreviations-heading: List of Abbreviations
 
 
 ### citation and bibliography style ###
-bibliography-heading-in-pdf: Works Cited
+bibliography-heading-in-pdf: References
 
 # biblatex options #
 # unless you run into 'biber' error messages, use natbib as it lets you customise your bibliography directly
 use-biblatex: true
-bib-latex-options: "style=authoryear, sorting=nyt, backend=biber, maxcitenames=2, useprefix, doi=true, isbn=false, uniquename=false" #for science, you might want style=numeric-comp, sorting=none for numerical in-text citation with references in order of appearance
+bib-latex-options: "style=numeric-comp, sorting=none"
+# "style=authoryear, sorting=nyt, backend=biber, maxcitenames=2, useprefix, doi=true, isbn=false, uniquename=false" #for science, you might want style=numeric-comp, sorting=none for numerical in-text citation with references in order of appearance
 
 # natbib options #
 # natbib runs into fewer errors than biblatex, but to customise your bibliography you need to fiddle with .bst files

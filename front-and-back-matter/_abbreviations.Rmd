@@ -1,6 +1,19 @@
-\item[1-D, 2-D] One- or two-dimensional, referring **in this thesis** to spatial dimensions in an image.
+\item[ANN] Artificial Neural Network.
 
-\item[Otter] One of the finest of water mammals.
+\item[BP] Backpropagation.
 
-\item[Hedgehog] Quite a nice prickly friend.
+\item[DFA] Direct Feedback Alignment.
 
+\item[BCE] Binary Cross Entropy.
+
+\item[FA] Feedback Alignment.
+
+\item[NTK] Neural Tangent Kernel.
+
+\item[t-SNE] t-Distributed Stochastic Neighbor Embedding.
+
+\item[GD] Gradient Descent.
+
+\item[SGD] Stochastic Gradient Descent.
+
+\item[NAG] Nesterov Accelerated Gradient.
