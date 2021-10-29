@@ -10,7 +10,7 @@ documentclass: book
 #bibliography: [bibliography/references.bib, bibliography/additional-references.bib]
 ---
 
-# Citations, cross-references, and collaboration {#cites-and-refs} 
+# Citations, cross-references, and collaboration {#chap:chapter_3}
 \chaptermark{Citations and cross-refs}
 \minitoc <!-- this will include a mini table of contents-->
 

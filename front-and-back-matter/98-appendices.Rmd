@@ -1,11 +1,16 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
 `r if(knitr:::is_latex_output()) '\\startappendices'`
 
-`r if(!knitr:::is_latex_output()) '# (APPENDIX) Appendix {-}'` 
+<!-- `r if(!knitr:::is_latex_output()) '# (APPENDIX) Appendix {-}'`  -->
 
 <!-- If you feel it necessary to include an appendix, it goes here. The first appendix should include the commands above. -->
 
-
-# Backpropagation with Binary Cross Entropy {#chap:appendix_a}
+# Backpropagation with Binary Cross-Entropy {#chap:appendix_a}
 Let's consider a simple binary classification task, it is common to use a network with a single logistic output with the binary cross-entropy loss function and for the sake of simplicity let's assume that there is only one hidden layer.
 $$
 \begin{aligned}

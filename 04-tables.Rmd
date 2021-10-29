@@ -9,7 +9,7 @@ documentclass: book
 #bibliography: [bibliography/references.bib, bibliography/additional-references.bib]
 ---
 
-# Tables {#tables} 
+# Tables {#chap:chapter_4}
 \minitoc <!-- this will include a mini table of contents-->
 
 ## Making LaTeX tables play nice
