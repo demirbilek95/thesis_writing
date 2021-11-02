@@ -12,8 +12,6 @@
 
 \item[t-SNE] t-Distributed Stochastic Neighbor Embedding.
 
-\item[GD] Gradient Descent.
-
 \item[SGD] Stochastic Gradient Descent.
 
 \item[NAG] Nesterov Accelerated Gradient.

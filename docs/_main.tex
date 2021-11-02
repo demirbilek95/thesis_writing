@@ -398,10 +398,6 @@ Neural Tangent Kernel.
 
 t-Distributed Stochastic Neighbor Embedding.
 
-\item[GD]
-
-Gradient Descent.
-
 \item[SGD]
 
 Stochastic Gradient Descent.
@@ -428,14 +424,14 @@ Nesterov Accelerated Gradient.
 \adjustmtc
 \markboth{Introduction}{}
 
-Artificial neural networks (ANNs) are a collection of connected computational nodes which is inspired by biological neural networks, each connection can transmit a helpful signal to another computational node like synapses in a brain. ANNs demonstrated colossal advancements in the last decades, thanks to these advancements, it is possible to solve complex problems in computer vision, speech recognition, and natural language processing within a reasonable amount of time and with satisfactory performance. These advancements were actualized through an old, but powerful algorithm called backpropagation (BP). BP is a training algorithm for ANNs that is based on adjusting network weights repeatedly to minimize a measure of the difference or in other words loss, between the output of the network and the ground truth \cite{Rumelhart:1986we}.\\
-Although nowadays BP is the workhorse algorithm for training ANNs, it has some drawbacks and it is not the only alternative. Recent studies offered different algorithms to train ANNs by addressing these drawbacks. These algorithms have different properties and principles than BP, some of them are competitive with BP or they even outperform the BP in terms of performance or convergence speed for specific problems.\\
-This thesis investigates the learning structures through BP and one of the alternative algorithm called direct feedback alignment (DFA) on the particular problem. In DFA, unlike BP error is propagated through a fixed random matrix instead of weights of the layers. Then network learns how to make this feedback useful \cite{nøkland2016direct}. Owing to this error propagation mechanism, DFA is considered to be more biologically plausible than BP and it opens the gate of parallelism in the training phase of ANNs.\\
-The problem at hand is known as the parity learning problem. Previous results showed that these parities are learnable by BP and lazy methods in a simpler setting whereas it is only learnable by BP in a more complex setting \cite{DBLP:journals/corr/abs-2002-07400}. That is why it is intriguing to test alternative algorithms on this problem to understand their learning dynamics and capabilities.\\
-The experiment results might lead us to three possible outcomes. First, we might acquire the similar performance as BP, if it is the case, it would be beneficial to test DFA and BP on a more challenging problem for further studies. Second, there might be a gap between BP and DFA then it would be intriguing to understand where the difference is coming from and how can we close this gap. Third, the alternative algorithm might not even learn and in this case, it is interesting to ask what makes a problem learnable by BP but not DFA. In all cases, results should help to understand the dynamics of learning of both methods.\\
-For applying BP and DFA in a more realistic setting, experiments are performed on the MNIST dataset by imitating the parity learning problem. After putting DFA to this frame, the reason behind the results is interpreted and possible improvements are motivated and implemented.\\
-Chapter \ref{chap:chapter_1} constructs the theoretical bases of the algorithms that are used for the experiments. These bases are composed of simple definitions, mathematical foundations, and the drawbacks of the algorithms. They are helpful to dig deeper into the learning structures of the training algorithms and, it is expected to have more control over their learning behaviors by tweaking components of these foundations. Also, it is beneficial to have these theoretical bases for acquiring a better understanding of the further interventions. Moreover, these theoretical foundations are used to implement the algorithms from scratch to use in experiments.\\
-Chapter \ref{chap:chapter_2} introduces the parity learning problem at hand. First, the formal definition of the problem is demonstrated then how the problem is imitated by using the MNIST dataset is explained in detail because this part is also highly correlated with the training phase of the algorithms.\\
+Artificial neural networks (ANNs) are a collection of connected computational nodes inspired by biological neural networks. Each connection can transmit a helpful signal to another computational node like synapses in a brain. ANNs demonstrated colossal advancements in the last decades. Thanks to these advancements, it is possible to solve complex problems in computer vision, speech recognition, and natural language processing within a reasonable amount of time and with satisfactory performance. These advancements were actualized through an old but robust algorithm called backpropagation (BP). BP is a training algorithm for ANNs that is based on repeatedly adjusting network weights to minimize the difference (loss) between the output of the network and the ground truth \cite{Rumelhart:1986we}.\\
+Although nowadays BP is the workhorse algorithm for training ANNs, it has some drawbacks, and it is not the only alternative. Recent studies offered different algorithms to train ANNs by addressing these drawbacks. These algorithms have other properties and principles than BP. Some of them are competitive with BP, or they even outperform the BP in terms of performance or convergence speed for specific problems.\\
+This thesis investigates the learning structures through BP and one of the alternative algorithm called direct feedback alignment (DFA) on the particular problem. Unlike BP, the error is propagated through a fixed random matrix instead of the layers' weights in DFA. Then network learns how to make this feedback useful. \cite{nøkland2016direct}. Due to this error propagation mechanism, DFA is considered more biologically plausible than BP, and it opens the gate of parallelism in the training phase of ANNs.\\
+The problem at hand is known as the parity learning problem. Previous results showed that these parities are learnable by BP and lazy methods in a more simple setting, whereas it is only learnable by BP in a more complex setting \cite{DBLP:journals/corr/abs-2002-07400}. That is why it is intriguing to test alternative algorithms on this problem to understand their learning dynamics and capabilities.\\
+The experiment results might lead us to three possible outcomes. First, we might acquire a similar performance as BP. If it is the case, it would be beneficial to test DFA and BP on a more challenging problem for further studies. Second, there might be a gap between BP and DFA then it would be intriguing to understand where the difference is coming from and how we can close this gap. Third, the alternative algorithm might not even learn, and in this case, it is interesting to ask what makes a problem learnable by BP but not DFA. In all cases, results should help to understand the dynamics of learning of both methods.\\
+For applying BP and DFA in a more realistic setting, experiments are performed on the MNIST dataset by imitating the parity learning problem. After putting DFA to this frame, the reason behind the results is interpreted, and possible improvements are motivated and implemented.\\
+Chapter \ref{chap:chapter_1} constructs the theoretical bases of the algorithms that are used for the experiments. These bases are composed of simple definitions, mathematical foundations, and the drawbacks of the algorithms. They help to dig deeper into the learning structures of the training algorithms. It is expected to have more control over their learning behaviors by tweaking components of these foundations. Also, it is beneficial to have these theoretical bases for acquiring a better understanding of the further interventions. Moreover, these theoretical foundations are used to implement the algorithms from scratch to use in experiments.\\
+Chapter \ref{chap:chapter_2} introduces the parity learning problem at hand. First, the formal definition of the problem is demonstrated then how the problem is imitated by using the MNIST dataset is explained in detail. This part is also highly correlated with the training phase of the algorithms. Later experiment results from \cite{DBLP:journals/corr/abs-2002-07400} are replicated to have concrete picture of previous studies.\\
 Chapter \ref{chap:chapter_3} presents results of the experiments. After having the same results from the previous studies for the parity problem, DFA is tested on the same problem.\\
 Chapter \ref{chap:chapter_4} wraps up the findings from experiments and creates a path for future studies.
 
@@ -447,9 +443,9 @@ Chapter \ref{chap:chapter_4} wraps up the findings from experiments and creates 
 \hypertarget{backpropagation}{%
 \section{Backpropagation}\label{backpropagation}}
 
-BP is one of the first algorithms that show ANNs could learn well-hidden representations and many studies showed that ANNs trained with BP can capture similar information as biological neural networks (e.g.~specific nodes learn the edges, corners). We need three components for BP, a dataset that is composed of input-output pairs, a network that is consisting parameters (weights and biases) and allows the input to flow through the network to have output and we need a loss function to measure the difference between the output of the network and ground truth that we have from the dataset.\\
-The main goal of BP is computing the gradients of the loss function (a measure of difference) concerning the parameters of neural networks by using the chain rule. These gradients show how much the parameter needs to change (in a positive or a negative direction) to minimize the loss function. After efficiently calculating the gradients, we can nudge the network parameters using gradient descent or its variants.\\
-Although BP is an older idea, it earned popularity with \cite{Rumelhart:1986we} because this study presented how BP can be used to make a network to learn the representations. After this popularity many practical and theoretical papers are published that investigate the dynamics of BP. It would be repeat and infeasible to show all the aspects again, however for the sake of completeness and to make a smoother transition from BP to DFA it is beneficial to have visual and mathematical explanations that show how error and weights are propagated. For the mathematical foundations, a binary classification task will be demonstrated with binary cross-entropy loss as an example in appendix \ref{chap:appendix_a}. This example is not chosen arbitrarily, indeed the parity problem that is imitated by MNIST is a binary classification problem. In addition to this, equations from appendix \ref{chap:appendix_a} are used to implement BP from scratch to have more control over the process, then the same implementation is modified to obtain DFA. The same set of steps are valid for different loss functions and activation functions, only the calculations will be slightly different but the general idea is the same which is obtaining the gradients by calculating the derivative of the loss function concerning the parameters.
+BP is one of the first algorithms that show ANNs could learn hidden representations well. Numerous studies showed that ANNs trained with BP could capture similar information as biological neural networks (e.g., specific nodes learn the edges, corners). We need three components for BP, a dataset composed of input-output pairs, a network consisting of parameters (weights and biases), and it allows the input to flow through the network to have output. We need a loss function to measure the difference between the output of the network and the ground truth that we have from the dataset.\\
+The main goal of BP is computing the gradients of the loss function (a measure of difference) concerning the parameters of neural networks by using the chain rule. These gradients show how much the parameter needs to change (positively or negatively) to minimize the loss function. After efficiently calculating the gradients, we can nudge the network parameters using gradient descent or its variants.\\
+Although BP is an older idea, it earned popularity with \cite{Rumelhart:1986we} because it presented how BP can make a network to learn the representations. After this popularity, the community published numerous practical and theoretical papers that investigated the dynamics of BP. It would be repeat and infeasible to show all the aspects again. However, for completeness and a smoother transition from BP to DFA, it is beneficial to have visual and mathematical explanations showing how the algorithms propagate the errors and the weights. For the mathematical foundations, a binary classification task will be demonstrated with binary cross-entropy loss as an example in appendix \ref{chap:appendix_a}. This example is not chosen arbitrarily. Indeed the parity problem that MNIST imitates is a binary classification problem. In addition to this, equations from appendix \ref{chap:appendix_a} are used to implement BP from scratch to have more control over the process. Then the exact implementation is modified to obtain DFA. The same set of steps are valid for different loss functions and activation functions. Only the calculations will be slightly different. The general idea is the same: obtaining the gradients by calculating the derivative of the loss function concerning the parameters.
 
 \begin{figure}
 
@@ -460,12 +456,12 @@ Although BP is an older idea, it earned popularity with \cite{Rumelhart:1986we} 
 \caption{Error Transportation in Backpropagation}\label{fig:BP-Error}
 \end{figure}
 
-In figure \ref{fig:BP-Error} we have a simple network with only a hidden layer that shows the error transportation configuration in BP. \(W_i\) are the weights, \(h_i\) are the output of the hidden layers that is denoted as \(i\), \(\hat{y}\) is the output of the network and \(y\) is the ground truth, for the sake of simplicity, biases are not showed in this figure. It is important to note that in BP, the transpose of weight is propagated. In literature, this issue is known as the weight transport problem and it is one of the most criticized disadvantages of BP.
+\noindent In figure \ref{fig:BP-Error} we have a simple network with only a hidden layer that shows the error transportation configuration in BP. \(W_i\) are the weights, \(h_i\) are the output of the hidden layers that is denoted as \(i\), \(\hat{y}\) is the output of the network, and \(y\) is the ground truth, for the sake of simplicity, biases are not showed in this figure. It is important to note that in BP, the transpose of weight is propagated to calculate the gradients. In literature, this issue is known as the weight transport problem, and it is one of the most criticized disadvantages of BP.
 
 \hypertarget{drawbacks-of-bp}{%
 \subsection{Drawbacks of BP}\label{drawbacks-of-bp}}
 
-We know that ANNs are inspired by biological neurons. However recent studies showed that BP is not exactly how biological neurons learn \cite{bengio2016biologically}. That is why many alternative algorithms are proposed by addressing these limitations of BP. This brings a term called biological plausibility of an algorithm that indicates the consistency of the algorithm with existing biological, medical, and neuroscientific knowledge. In the light of this term we can put in order the drawbacks of BP as the following:
+We know that biological neurons inspired ANNs. However, recent studies showed that BP is not precisely how biological neurons learn \cite{bengio2016biologically}. This brings a term called biological plausibility of an algorithm that indicates the algorithm's consistency with existing biological, medical, and neuroscientific knowledge. That is why the community proposed many alternative algorithms by addressing these limitations of BP. In the light of this term, we can put in order the drawbacks of BP as the following:
 
 \begin{itemize}
     \item \textbf{Biological implausibility:}
@@ -482,16 +478,16 @@ We know that ANNs are inspired by biological neurons. However recent studies sho
     \item \textbf{Lack of Parallel Processing} \cite{ma2019hsic}
 \end{itemize}
 
-Simple interventions may handle some of these drawbacks. For instance, implementing gradient clipping or using different activation functions might solve exploding gradients and vanishing gradients problems. However, they may happen frequently in deeper networks and they must be taken into consideration while training ANNs. On the other hand, some of the drawbacks can not be handled with simple modifications. For instance, BP is a sequential process and there are locking mechanisms (forward, backward and update) that ensure none of the processes is executed before its preceding completed. This makes BP infeasible for parallel processing because each execution has to wait for its preceding. Hence deeper and larger networks' training can be computationally expensive.\\
-Biological plausibility is important because of a couple of reasons. We know that ANNs are inspired by biological neurons and biological plausibility refers to consistency between BP and biological knowledge about the neurons of a brain so it is interesting to examine the dissimilarity or similarity among them. Besides, there is a field that is the intersection of neuroscience and deep learning so it is important to understand the biological plausibility feature of the algorithms, especially for this field. Furthermore, even though nowadays ANNs might outperform the human brain in a specific task, we are still far away from fully mimicking it, in other words, most of the time ANNs are very good on a task which they are trained, but they are not diverse and they can be easily tricked with some kinds of attacks like adversarial ones. Investigating these features of algorithms may open the doors of diverse ANN that is not specialized on a single task or it might make them more robust to attacks.\\
-Alternative algorithms address some of the drawbacks of BP and they propose a solution to them but they also demonstrate some of them. However, these algorithms can be considered as one or more steps closer to more biologically plausible and more robust algorithms.
+\noindent Simple interventions may handle some of these drawbacks. For instance, implementing gradient clipping or different activation functions might solve exploding gradients and vanishing gradients. However, they may frequently happen in deeper networks, and they must be considered while training ANNs. On the other hand, some of the drawbacks can not be handled with superficial modifications. For instance, BP is a sequential process, and there are locking mechanisms (forward, backward and update) that ensure none of the processes is executed before its preceding completion. This makes BP infeasible for parallel processing because each execution has to wait for its preceding process. Hence deeper and larger networks' training can be computationally expensive.\\
+Biological plausibility is significant because of a couple of reasons. We know that biological neurons inspired ANNs, and biological plausibility refers to consistency between BP and biological knowledge about the neurons of a brain. Hence, it is interesting to examine the dissimilarity or similarity among them. Besides, there is a field that is the intersection of neuroscience and deep learning, so it is natural to investigate the biological plausibility feature of the algorithms, especially for this field. Furthermore, even though nowadays ANNs might outperform the human brain in a specific task, we are still distant from fully mimicking it. In other words, most of the time, ANNs are very good on a task that they are trained in, but they are not diverse, and some kinds of attacks like adversarial ones can easily trick them. Investigating the learning dynamics of these algorithms may open the doors of diverse ANNs that are not specialized in a single task or make them more robust to attacks.\\
+Alternative algorithms address some of the drawbacks of BP, and they propose a solution to them, but they also demonstrate a couple of them. However, these algorithms can be considered one or more steps closer to more biologically plausible and robust algorithms.
 
 \hypertarget{direct-feedback-alignment}{%
 \section{Direct Feedback Alignment}\label{direct-feedback-alignment}}
 
-So far we have seen how the error is propagated in BP sequentially through a network with the backward pass. Unlike BP, DFA uses a different way to propagate the error. This way uses a random matrix instead of the transpose of the weight matrix and by doing so it brings a solution to the weight transport problem. Before explaining how DFA works, it is better to investigate the feedback alignment (FA) algorithm since DFA is the extension of FA.\\
-In \cite{lillicrap2014random}, authors proved that to obtain learning in ANNs, precise symmetric weights are not required, without these matrices BP-like learning can be obtained. Any random matrix under some conditions can provide the learning. Implicit dynamics in the standard forward weight updates encourage an alignment between weights and the random matrix. In other words, a random matrix pushes the network in roughly the same direction as BP would. They supported this hypothesis with some experiments on a linear problem and MNIST classification task and empirical results demonstrate that FA is successful on training the network and it has similar performance results as BP on these tasks.\\
-Even though learning still occurs with random matrix and FA offers the solution to the weight transport problem, it does not provide any computational advantage. To extend FA to DFA we need to slightly change the error propagation mechanism of FA. In FA although the error is propagated through a random matrix, the backward process is still sequential. DFA extends this idea and propagates the random matrix in parallel to each layer. In other words, DFA takes the loss and distribute it globally to all layers without requiring sequential step. It also creates an opportunity to parallelize the computation that might speed up the training process.
+So far, we have seen how the error is propagated in BP sequentially through a network with the backward pass. Unlike BP, DFA uses a different way to propagate the error. This way uses a random matrix instead of the transpose of the weight matrix, which brings a solution to the weight transport problem. Before explaining how DFA works, it is better to investigate the feedback alignment (FA) algorithm since DFA is the extension of FA.\\
+In \cite{lillicrap2014random}, authors proved that precise symmetric weights are not required to obtain learning in ANNs. Without these matrices, BP-like learning can be obtained. Any random matrix under some conditions can provide the learning. Implicit dynamics in the standard forward weight updates encourage an alignment between weights and the random matrix. In other words, a random matrix pushes the network in roughly the same direction as BP would. They supported this hypothesis with some experiments on a linear problem and MNIST classification task. The empirical results demonstrate that FA successfully trains the network and has similar performance results as BP on these tasks.\\
+Even though learning still occurs with random matrix and FA offers the solution to the weight transport problem, it does not provide any computational advantage. To extend DFA, we need to change the error propagation mechanism of FA slightly. In FA, the error is propagated through a random matrix, but the backward process is still sequential. DFA extends this idea and propagates the random matrix in parallel to each layer. In other words, DFA takes the loss and distribute it globally to all layers without requiring sequential step. It also creates an opportunity to parallelize the computation that might speed up the training process.
 
 \begin{figure}
 
@@ -502,80 +498,81 @@ Even though learning still occurs with random matrix and FA offers the solution 
 \caption{Error Transportation in Direct Feedback Alignment}\label{fig:DFA-Error}
 \end{figure}
 
-In figure \ref{fig:DFA-Error} we can see the error transportation configurations for FA and DFA. This figure is the same as the one in \cite{nøkland2016direct} but shows only one hidden layer. In fact, with only one hidden layer FA and DFA are identical.\\
-It is important to point out that, BP and DFA have different learning dynamics. BP calculates the gradients that point to the steepest descent in the loss function space. On the other hand, FA and DFA provide a different update direction but still descending. Even though they have different update directions, empirical results from \cite{lillicrap2014random, nøkland2016direct} showed that FA and DFA are as good as BP in terms of performance for specified tasks in these papers. In addition to this, ANNs that are trained with DFA show well separation for labels as in BP's hidden representations of the layers. We can observe this from the t-distributed stochastic neighbor embedding (t-SNE) visualizations of the hidden layers' representations. t-SNE is a method visualizing high-dimensional data which tries to keep the neighbor property in lower dimensions.\\
-Recently, a new study is published which tests the applicability of DFA on modern deep learning tasks and architectures such as neural view synthesis, recommender systems, geometric learning, and natural language processing \cite{launay2020direct}. Because even though some of the alternative methods are competitive with BP in simple tasks like MNIST, they are not competitive or trainable on more complex tasks. Results showed that DFA successfully trains all these complex architectures with performance close to BP. This study supports that complex tasks can be solved without symmetric weight transport and it proves that DFA is suitable for more challenging problems.\\
-After having the mathematical foundations of BP in appendix \ref{chap:appendix_a} transition to DFA is relatively easy. The forward pass is the same as BP whereas, in the backward pass, we need to replace the transpose of the weight matrix which is used to calculate the gradients with the random matrix. Let's use the same example as \ref{chap:appendix_a} to present how gradients are calculated in DFA. That means we have a simple binary classification task with binary cross-entropy loss and our network has only one hidden layer. In this setting, gradients of the weights can be calculated as the following:
+\noindent In figure \ref{fig:DFA-Error} we can see the error transportation configurations for FA and DFA. This figure is the same as the one in \cite{nøkland2016direct} but shows only one hidden layer. In fact, with only one hidden layer, FA and DFA are identical.\\
+It is crucial to point out, BP and DFA have different learning dynamics. BP calculates the gradients that point to the steepest descent in the loss function space. On the other hand, FA and DFA provide a different update direction but still descending. It is still descending because empirical and theoretical results proved that the networks' weights align with the random matrix that leads to gradients alignment. Therefore the more alignment we have, the same direction would FA and DFA point as BP. Even though they have different update directions, since they are both descending, the results from \cite{lillicrap2014random, nøkland2016direct} showed that FA and DFA are as good as BP in terms of performance for specified tasks in these papers. In addition to this, ANNs trained with DFA show decent separation for labels as in BP's hidden representations of the layers. We can observe this from the t-distributed stochastic neighbor embedding (t-SNE) visualizations of the hidden layers' representations. t-SNE is a method visualizing high-dimensional data which tries to keep the neighbor property in lower dimensions.\\
+Recently, a new study has been published which tests the applicability of DFA on modern deep learning tasks and architectures such as neural view synthesis, recommender systems, geometric learning, and natural language processing \cite{launay2020direct}. Because even though some of the alternative methods are competitive with BP in simple tasks like MNIST, they are not competitive or trainable on more complex tasks. Results showed that DFA successfully trains all these complex architectures with performance close to BP. This study supports that complex tasks can be solved without symmetric weight transport, proving that DFA is suitable for more challenging problems.\\
+Let us use the same example as \ref{chap:appendix_a} to present how gradients are calculated in DFA. After having the mathematical foundations of BP, transition to DFA is relatively easy. The forward pass is the same as BP, whereas, in the backward pass, we need to replace the transpose of the weight matrix, which is used to calculate the gradients with the random matrix. Considering the same example, we have a simple binary classification task with binary cross-entropy loss, and our network has only one hidden layer. In this setting, gradients of the weights can be calculated as the following:
 \[
 \frac{\partial BCE}{\partial w_{2}}=h_{1}^T\left(\hat{y}-y\right)
 \]
-There is no change in the calculations of gradients of the last layer, whereas for the hidden layer we have:
+There is no change in the calculations of gradients of the last layer, whereas, for the hidden layer, we have:
 \[
 \begin{aligned}
 \frac{\partial BCE}{\partial w_{1}}= \left(X\right)^T\left(\hat{y}-y\right)\left(B\right) \odot f'(a_1)
 \end{aligned}
 \]
-Please pay attention that \(w_2^T\) is replaced with the random matrix \(B\). This means that we can obtain learning by changing either the random matrix or weight matrix. We know that in DFA \(B\) is fixed so the feedforward weights of the network will learn to make these signals useful by aligning with the BP teaching signal.\\
-Update rules are the same as BP which means that gradient descent and its variants can be used.
+Please pay attention that \(w_2^T\) is replaced with the random matrix \(B\). This means that we can obtain learning by changing either the random matrix or weight matrix. We know that in DFA, \(B\) is fixed, so the feedforward weights of the network will learn to make these signals useful by aligning with the BP's teaching signal.\\
+Update rules are the same as BP, which means that gradient descent and its variants can be used.
 \[
 \begin{aligned} 
 \text{parameter} &= \text{parameter} - \text{step size} \times \frac{\partial BCE}{\partial \text(parameter)}  \\
 \end{aligned}
 \]
-With this tiny modification, DFA brings a solution to some of the drawbacks of BP such as using exact symmetric weights of the feedforward connections (weight transport problem), lack of parallel processing (random matrix can be propagated in parallel) and it is less likely to suffer from vanishing or exploding gradients than BP. Eventually, it propose us more biologically plausible training method. However, it is not the perfect solution either. Because it assumes there is a global feedback path to propagate the error that might be biologically implausible because feedback has to travel a long physical distance. It also suffers some of the drawbacks of BP. For instance, computation is still purely linear, we still need precise knowledge of derivatives of the non-linearities, we still communicate by clean continuous values and it is not clear where the output targets would come from. Besides, DFA has an extra task to accomplish while training the ANN that is aligning with BP's weights and a layer can not learn before its preceding layers are aligned. This might spawn performance concerns and DFA might lag behind BP. Furthermore, DFA fails to train convolutional neural networks which dominate the computer vision tasks. Finally, unlike BP, DFA wasn't investigated on particular subjects like adversarial attacks and interpretability by the community. This leaves some question marks on the robustness of DFA.
+With this tiny modification, DFA brings a solution to some of the drawbacks of BP. Such as using exact symmetric weights of the feedforward connections (weight transport problem), lack of parallel processing (random matrix can be propagated in parallel), and it is less likely to suffer from vanishing or exploding gradients than BP. Eventually, it proposes a more biologically plausible training method. However, it is not the perfect solution either. Because it assumes there is a global feedback path to propagate the error that might be biologically implausible because feedback has to travel a long physical distance. It also suffers some of the drawbacks of BP. For instance, computation is still purely linear. We still need precise knowledge of derivatives of non-linearities. We still communicate by clean, continuous values, and it is unclear where the output targets would come from. Besides, DFA has an extra task to accomplish while training the ANN that aligns with BP's weights, and a layer can not learn before its preceding layers are aligned. This might spawn performance concerns, and DFA might lag behind BP.
+Furthermore, DFA fails to train convolutional neural networks which dominate the computer vision tasks \cite{refinetti2021align, launay2019principled}. Finally, unlike BP, DFA was not investigated on particular subjects like adversarial attacks and interpretability by the community. This leaves some question marks about the robustness of DFA.
 
 \hypertarget{lazy-methods}{%
 \section{Lazy Methods}\label{lazy-methods}}
 
-Theoretical results present that especially over-parameterized ANNs (not limited to these networks) trained with gradient-based methods can reach zero training loss with their parameters barely changing, the term lazy doesn't refer to the poor property of a method whereas it is called lazy because its parameters hardly move \cite{chizat2020lazy}.\\
-Lazy methods are not in the center of the experiments so detailed explanations of these methods are out of scope in this study but they have been presented in \cite{DBLP:journals/corr/abs-2002-07400} and they fail to learn the parities in a more complex setting. Hence for the sake of completeness, they implemented too and it is crucial to specify at least a simple definition of them and how they are practically implemented.
+Theoretical results present that especially over-parameterized ANNs (not limited to these networks) trained with gradient-based methods can reach zero training loss with their parameters barely changing. The term lazy does not refer to the poor property of methods, whereas they are called lazy methods because their parameters hardly move during training \cite{chizat2020lazy}.\\
+Lazy methods are not at the center of the experiments. Hence, detailed explanations of these methods are out of scope in this study, but they have been presented in \cite{DBLP:journals/corr/abs-2002-07400}, and they fail to learn the parities in a more complex setting. Hence, they are implemented too for completeness, and it is essential to embody at least a simple definition of them and how they are practically implemented.
 
 \hypertarget{neural-tangent-kernel}{%
 \subsection{Neural Tangent Kernel}\label{neural-tangent-kernel}}
 
-Previous studies demonstrated that at initialization ANNs are just gaussian processes in the infinite-width limit. This phenomenon connects ANNs to kernel methods.
-Neural Tangent Kernel (NTK) is a kernel that describes the evolution of an ANN during the training phase, during this phase network function follows the kernel gradient of the functional loss, authors named this kernel as Neural Tangent Kernel (NTK). NTK is useful to explain the training of ANNs in function space rather than parameters space \cite{DBLP:journals/corr/abs-1806-07572}.\\
-Empirical results demonstrated that the NTK regime performs worse than BP on standard tasks like MNIST. However NTK is still worth investigating further to understand ANNs' training dynamics since it brings a new perspective on the training phase.\\
-Simple practical implementation of NTK is obtained with three steps. Initially, an extra layer is created with the same dimensions as the first layer, second in the forward pass concatenation of these two layers' parameters are given as input to the gated linear unit with \(1\). Lastly, in parameters update extra layer is not considered. By doing this, we decoupled the gating from the linearity of the ReLU and we kept the gates fixed during training.
+Studies showed that neural networks under some conditions are equivalent to gaussian process, and they mathematically approximate the kernel machines if they are trained with gradient descent \cite{lee2018deep, domingos2020model}. Authors of \cite{DBLP:journals/corr/abs-1806-07572} proved that during the training phase, ANNs follow the kernel gradient of the functional loss concerning a new kernel. They named this kernel a Neural Tangent Kernel (NTK). In other words, NTK is a kernel that describes the evolution of an ANN during the learning phase and, it is beneficial to explain the training of ANNs in function space rather than parameters space. It allows us to work with infinite width neural networks using the kernel trick, and it helps us understand the dynamics of learning and interference.\\
+Empirical results demonstrated that the NTK regime performs worse than BP on standard tasks like MNIST. However, NTK is still worth investigating further to understand ANNs' training dynamics since it brings a new perspective on the training phase.\\
+Basic practical implementation of NTK is obtained with three steps. Initially, an extra layer is created with the exact dimensions of the first layer. The second in the forward pass concatenation of these two layers' parameters are given as input to the gated linear unit with \(1\). Lastly, in the parameters update phase, the extra layer is not considered. With these adjustments, we decoupled the gating from the linearity of the ReLU, and we kept the gates fixed during training.
 
 \hypertarget{random-features}{%
 \subsection{Random features}\label{random-features}}
 
-Standard random features are where first layer weights are initialized randomly and the train only the second layer. These mechanisms are particularly good at approximating kernels. In \textbf{gaussian features} case we initialize the first layer weights using gaussian distribution whereas in \textbf{ReLU features} and \textbf{linear features} we initialize the first layer weights uniformly but in linear features, ReLU is not used as an activation function in the forward pass.
+Standard random features are where first layer weights are initialized randomly by following a distribution and the train only the second layer. These mechanisms are particularly good at approximating kernels. They are preferred because kernel machines might take too much time to train if the data size is big. In \textbf{gaussian features} case, we initialize the first layer weights using gaussian distribution. In contrast, in \textbf{ReLU features} and \textbf{linear features}, we initialize the first layer weights uniformly but, for linear features, non-linear activation functions are not used in the forward pass.
 
 \hypertarget{optimizers}{%
 \section{Optimizers}\label{optimizers}}
 
-Up to this point, we only mentioned superficially how we can use gradient descent and its variants to update the weights of a network. This part worths further investigation because many variants provide better convergence properties to find the minimum of the loss function and we may take advantage of these methods to have better performance on BP and DFA. These methods may spawn a significant impact on convergence speed and overall performance. As a reference to the following methods mostly \cite{DBLP:journals/corr/Ruder16} is used, it is a nice overview for the optimizers and it summarizes their advantages as well as drawbacks
+Up to this point, we only mentioned how we could use gradient descent and its variants to update the weights of a network superficially. This part is worth further investigation because many variants provide better convergence properties to find the minimum of the loss function. We may take advantage of these methods to have better performance or faster convergence for BP and DFA. These methods may spawn a significant impact on convergence speed and overall performance. As a reference to the following methods, mostly \cite{DBLP:journals/corr/Ruder16} is used, also the structure of this part and mathematical notations are adapted from the same paper, it is an excellent overview for the optimizers, and it reviews their advantages as well as drawbacks.
 
 \hypertarget{gradient-descent}{%
 \subsection{Gradient Descent}\label{gradient-descent}}
 
-Gradient descent (GD) is a first-order iterative optimization algorithm. It is the most used algorithm to optimize neural networks. It has three variants that depend on how much data we use to compute the gradients. \textbf{Batch gradient descent} computes the gradients for the entire dataset and performs only one update. \textbf{Stochastic gradient descent} (SGD) in contrast calculates gradients for each training example and performs parameter update for each of them. Lastly, \textbf{mini-batch gradient descent} calculates the gradients of mini-batches and performs updates for each mini-batches.
-GD is infeasible to implement for the datasets that do not fit in the memory whereas SGD performs too frequent updates which spawns high variance in parameters that cause fluctuation in the loss function. SGD provides same convergence properties as batch gradient descent if learning rate is periodically decreased through iterations. For our experiments, we used mini-batch gradient descent which takes the best of two methods. Most of the implementations use SGD term instead of mini-batch gradient descent, the same tradition will be followed in this study too. Update rule of mini-batch gradient descent is the following:
+Gradient descent is a first-order iterative optimization algorithm. It is the most used algorithm to optimize neural networks. It has three variants that depend on how much data we use to compute the gradients. \textbf{Batch gradient descent} computes the gradients for the entire dataset and performs only one update. \textbf{Stochastic gradient descent} (SGD), in contrast, calculates gradients for each training example and performs parameter update for each of them. Lastly, \textbf{mini-batch gradient descent} calculates the gradients of mini-batches and performs updates for each mini-batches.
+Gradient descent is infeasible to implement for the datasets that do not fit in the memory. In contrast, SGD performs too frequent updates, spawning high variance in parameters that cause fluctuation in the loss function. SGD provides the same convergence properties as batch gradient descent if the learning rate periodically decreases through iterations. For our experiments, we used mini-batch gradient descent, which takes the best of two methods. Most of the implementations use SGD term instead of mini-batch gradient descent. The same tradition will be followed in this study too. Update rule of mini-batch gradient descent is the following:
 \[
 \theta_{t+1}=\theta_t-\eta \cdot \nabla_{\theta} J\left(\theta ; x^{(i: i+n)} ; y^{(i: i+n)}\right)
 \]
 where \(\theta\) is the parameters of the network, \(\eta\) is the learning rate or step size, \(\nabla_{\theta}\) is the gradients of the parameters and \(J\left(\theta ; x^{(i: i+n)} ; y^{(i: i+n)}\right)\) is the loss function for mini-batch \(i\) to \(i+n\).\\
-There are couple of challenges in GD because it doesn't always guarantee good convergence:
+There are a couple of challenges in SGD because it doesn't always guarantee good convergence:
 
 \begin{itemize}
-  \item Choosing a proper learning rate is difficult, small learning rates may take too much time to converge whereas large learning rates may spawn fluctuations in loss function and it may even diverge.
-  \item SGD doesn't guarantee the global minimum. It can easily be stuck in the local minimum for highly non-convex loss functions that are common for deep learning tasks.
-  \item Same learning rate is applied to all parameters but we may want to update the parameter by their frequencies.
+  \item Choosing a proper learning rate is intricate. Small learning rates may take too long to converge, whereas big learning rates may spawn loss function fluctuations and even diverge.
+  \item SGD does not guarantee the global minimum. It can easily be stuck in the local minimum for highly non-convex loss functions that are standard for deep learning tasks.
+  \item Same learning rate is applied to all parameters, but we may want to update the parameter by their frequencies.
+  \item Convergence is strongly dependent on where the initial step starts. Unfortunate initializations may never reach the global minimum. 
 \end{itemize}
 
 \hypertarget{momentum}{%
 \subsubsection{Momentum}\label{momentum}}
 
-SGD has difficulties finding the direction in valleys because the gradients on these areas will be either zero or very close to zero so it will slow down and make hesitant progress. These areas are very common around the local minimum. Momentum is an idea that dampens the oscillations in the relevant direction. It is accomplished by adding a fraction \(\gamma\) of the update vector of the past time step. This fraction is usually set to \(0.9\). This term usually leads to faster convergence and speeds up the iterations.
+\noindent SGD has difficulties finding the direction in valleys because the gradients on these areas will be either zero or very close to zero, so it will slow down and make hesitant progress. These areas are prevalent around the local minimum. Momentum is an idea that dampens the oscillations in the relevant direction. It is accomplished by adding a fraction \(\gamma\) of the update vector of the past time step. This fraction is usually set to \(0.9\). This term usually leads to faster convergence and speeds up the iterations.
 \[
 \begin{aligned}
 v_{t} &=\gamma v_{t-1}+\eta \nabla_{\theta} J(\theta) \\
 \theta_{t+1} &=\theta_t-v_{t}
 \end{aligned}
 \]
-However momentum follows the direction of the gradients blindly, \textbf{nesterov accelerated gradient} (NAG) is a way of giving our method to intuition by approximating the next position of the parameters with \(\theta -\gamma v_{t-1}\), with this we hope to slow down before the hill slopes up. In other words, first, as in the momentum method, we make a big jump in the direction of previous gradients then we measure the gradients where we end up and make a correction. The new update rule becomes:
+However, momentum follows the direction of the gradients blindly, \textbf{nesterov accelerated gradient} (NAG) is a way of giving our method to intuition by approximating the next position of the parameters with \(\theta -\gamma v_{t-1}\), with this we hope to slow down before the hill slopes up. In other words, first, as in the momentum method, we make a big jump in the direction of previous gradients, then we measure the gradients where we end up and make a correction. The new update rule becomes:
 \[
 \begin{aligned} v_{t} &=\gamma v_{t-1}+\eta \nabla_{\theta} J\left(\theta-\gamma v_{t-1}\right) \\ 
 \theta_{t+1} &=\theta_t-v_{t} \end{aligned}
@@ -584,21 +581,21 @@ However momentum follows the direction of the gradients blindly, \textbf{nestero
 \hypertarget{adaptive-methods}{%
 \subsection{Adaptive Methods}\label{adaptive-methods}}
 
-Two main drawbacks of SGD are; tuning the learning rate is difficult and we use the same learning rate for each parameter. Adaptive methods offer solutions to these problems. They use smart ways to modify the learning rate which may differ from parameter to parameter and some of them even remove the need of setting the learning rate. However, they are still gradient-based algorithms with some modifications and they don't always guarantee global convergence.
+Two main drawbacks of SGD are; tuning the learning rate is complex, and we use the same learning rate for each parameter. Adaptive methods offer solutions to these problems. They use intelligent ways to modify the learning rate that may differ from parameter to parameter, and some of them even remove the need to set the learning rate. However, they are still gradient-based algorithms with some modifications, and they do not always guarantee convergence.
 
 \hypertarget{adagrad}{%
 \subsubsection{Adagrad}\label{adagrad}}
 
-In vanilla SGD and SGD with momentum, we used the same learning rate for each parameter. On the contrary, adagrad adapts the learning rates for each parameter, it performs larger updates for infrequent parameters and smaller updates for frequent parameters. To do this, it updates the learning rate at each time step \(t\) for each parameter based on past gradients of them.
+\noindent In vanilla SGD and SGD with momentum, we used the same learning rate for each parameter. On the contrary, adagrad adapts the learning rates for each parameter. It performs larger updates for infrequent parameters and smaller updates for frequent parameters. To do this, it updates the learning rate at each time step \(t\) for each parameter based on their past gradients.
 \[
 \theta_{t+1}=\theta_{t}-\frac{\eta}{\sqrt{G_{t}+\epsilon}} \odot g_{t}
 \]
-\(G_t\) contains the sum of squares of the past gradients for all parameters. \(g_t\) is the gradients of all parameters at time step \(t\) and \(\epsilon\) is the smoothing constant to avoid zero division and it is usually set to \(10^{-8}\). With this update rule, the learning rate is modified at each time step. At the same time, \(G_t\) is getting larger with each time step since we only add positive terms which makes the learning rate very small and the algorithm is not able to learn anymore in advancing time steps.
+With this update rule, the learning rate is modified at each time step. \(G_t\) contains the sum of squares of the past gradients for all parameters. \(g_t\) is the gradients of all parameters at time step \(t\), and \(\epsilon\) is the smoothing constant to avoid zero division, and it is usually set to \(10^{-8}\). \(G_t\) is getting larger with each step since we only add positive terms that make the learning rate very small, and the algorithm cannot learn any more in advancing time steps.
 
 \hypertarget{adadelta}{%
 \subsubsection{Adadelta}\label{adadelta}}
 
-Adadelta is an extension of Adagrad which tries to solve the decreasing learning rate problem and tries to remove the need for tuning the learning rate manually \cite{zeiler2012adadelta}. Instead of using the squares of all past gradients, Adadelta sets a moving window of gradient updates and by doing so it continues learning even after many iterations. It does by storing the exponentially decaying average of the squared gradients.
+\noindent Adadelta is an extension of Adagrad, which tries to solve the decreasing learning rate problem and tries to remove the need for tuning the learning rate manually \cite{zeiler2012adadelta}. Instead of using the squares of all past gradients, Adadelta sets a moving window of gradient updates, and by doing so, it continues learning even after many iterations. It does by storing the exponentially decaying average of the squared gradients.
 \[
 E\left[g^{2}\right]_{t}=\rho E\left[g^{2}\right]_{t-1}+(1-\rho) g_{t}^{2}
 \]
@@ -606,11 +603,11 @@ E\left[g^{2}\right]_{t}=\rho E\left[g^{2}\right]_{t-1}+(1-\rho) g_{t}^{2}
 \[
 \operatorname{RMS}[g]_{t}=\sqrt{E\left[g^{2}\right]_{t}+\epsilon}
 \]
-where \(\epsilon\) is a smoothing constant for avoiding any problem in the denominator. By using this term we can change the update rule of Adagrad to the following:
+Where \(\epsilon\) is a smoothing constant for avoiding any problem in the denominator, by using this term, we can change the update rule of Adagrad to the following:
 \[
 \theta_{t+1}=\theta_{t}-\frac{\eta}{R M S[g]_{t}} \odot g_{t}
 \]
-For clarity we can rephrase the update rule as follows:
+For clarity, we can rephrase the update rule as follows:
 \[
 \theta_{t+1} = \theta_{t} + \Delta \theta_{t} \\
 \]
@@ -620,7 +617,7 @@ Authors of \cite{zeiler2012adadelta} pointed out that parameters updates in SGD,
 \[
 E\left[\Delta \theta^{2}\right]_{t}=\rho E\left[\Delta \theta^{2}\right]_{t-1}+(1-\rho) \Delta \theta_{t}^{2}
 \]
-The root mean squared error of the parameters is:
+The root means squared error of the parameters is:
 \[
 \operatorname{RMS}[\Delta \theta]_{t}=\sqrt{E\left[\Delta \theta^{2}\right]_{t}+\epsilon}
 \]
@@ -632,26 +629,26 @@ Since \(\operatorname{RMS}[\Delta \theta]_{t}\) is unknown at time step \(t\), i
 \hypertarget{rmsprop}{%
 \subsubsection{RMSProp}\label{rmsprop}}
 
-RMSProp is another method that is offered to solve the decreasing learning rate problem of adagrad. It is proposed by Geoffrey Hinton in his neural networks for machine learning class. It is identical to the first update rule of Adadelta that is:
+\noindent RMSProp is another method that is offered to solve the decreasing learning rate problem of adagrad. Geoffrey Hinton proposed it in his neural networks for machine learning class. It is identical to the first update rule of Adadelta that is:
 \[
 \begin{aligned}
 E\left[g^{2}\right]_{t}=\rho E\left[g^{2}\right]_{t-1}+(1-\rho) g_{t}^{2} \\
 \theta_{t+1}=\theta_{t}-\frac{\eta}{\sqrt{E\left[g^{2}\right]_{t}+\epsilon}} \odot g_{t}
 \end{aligned}
 \]
-Similar to momentum constant, it is suggested to set \(\rho\) to \(0.9\) and \(\epsilon\) is the smoothing constant similar to previous methods' update rules.
+Similar to momentum constant, it is suggested to set \(\rho\) to \(0.9\), and \(\epsilon\) is the smoothing constant similar to previous methods' update rules.
 
 \hypertarget{adam}{%
 \subsubsection{ADAM}\label{adam}}
 
-Adam is another adaptive method that adjusts the learning rates for each parameter and it stores also an exponentially decaying average of the past gradients as well as past squared gradients similar to momentum. It combines the best properties of adagrad and RMSProp algorithms.
+\noindent Adam is another adaptive method that adjusts the learning rates for each parameter. It also stores an exponentially decaying average of the past gradients and past squared gradients similar to momentum. It combines the best properties of adagrad and RMSProp algorithms.
 \[
 \begin{aligned}
 m_{t} &=\beta_{1} m_{t-1}+\left(1-\beta_{1}\right) g_{t} \\
 v_{t} &=\beta_{2} v_{t-1}+\left(1-\beta_{2}\right) g_{t}^{2}
 \end{aligned}
 \]
-where \(m_t\) is the estimate of the first moment of the gradients and \(v_t\) is the estimate of the second moment. However, the authors noticed that with zero initialization these two terms are biased towards zero. Therefore they proposed bias corrected forms of these terms to overcome this problem. It is suggested to set defaults values for \(\beta_1\) and \(\beta_2\) as \(0.9\) and \(0.999\).
+Where \(m_t\) is the estimate of the first moment of the gradients and \(v_t\) is the estimate of the second moment. However, the authors noticed that with zero initialization, these two terms are biased towards zero. Therefore they proposed bias-corrected forms of these terms to overcome this problem. It is suggested to set defaults values for \(\beta_1\) and \(\beta_2\) as \(0.9\) and \(0.999\).
 
 \[
 \begin{aligned}
@@ -660,475 +657,41 @@ where \(m_t\) is the estimate of the first moment of the gradients and \(v_t\) i
 \end{aligned}
 \]
 Then the update rule is very similar to Adadelta and RMSProp that is:
-
 \[
 \theta_{t+1}=\theta_{t}-\frac{\eta}{\sqrt{\hat{v}_{t}}+\epsilon} \hat{m}_{t}
 \]
 
-\begin{savequote}
-Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,
-consectetur, adipisci velit\ldots{}
-
-There is no one who loves pain itself, who seeks after it and wants to
-have it, simply because it is pain\ldots{}
-\qauthor{--- Cicero's \emph{de Finibus Bonorum et Malorum}.}\end{savequote}
-
-
+\noindent With ADAM, we completed the theoretical overview of the methods that are used for the experiments. We started with the simple definition of BP, clarified why it is convenient to train ANNs with BP. Also, we explained how the error is propagated in BP and how gradients are calculated mathematically. Lastly, we mentioned the drawbacks of BP. Then, we moved to DFA by slightly changing the error propagation mechanism of BP, and we adapted this change to our mathematical foundations. We specified which drawbacks of BP were addressed by DFA, and we also mentioned the limitations of DFA. After that, lazy methods are summarized since they are implemented and used in experiments of previous studies. Finally, optimizers are described in general. We mentioned why they are important, and lastly, we presented their update rules and drawbacks.
 
 \hypertarget{chap:chapter_2}{%
-\chapter{R Markdown basics}\label{chap:chapter_2}}
+\chapter{Learning Problems}\label{chap:chapter_2}}
 
 \minitoc 
 
-\noindent Here is a brief introduction to using \emph{R Markdown}.
-\emph{Markdown} is a simple formatting syntax for authoring HTML, PDF, and MS Word documents and much, much more.
-\emph{R Markdown} provides the flexibility of \emph{Markdown} with the implementation of \textbf{R} input and output. For more details on using \emph{R Markdown} see \url{http://rmarkdown.rstudio.com}.
+\noindent The success of neural networks spawned a great interest in the community in the fields of learnability of the various models. This involves testing different models on the same problem and observing the results. It is particularly beneficial to understand the learning dynamics of the models, which helps to find out the limitations. These studies achieved striking success in understanding the neural networks.
 
-\hypertarget{basic-markdown-syntax}{%
-\section{Basic markdown syntax}\label{basic-markdown-syntax}}
+\hypertarget{parity-learning-problem}{%
+\section{Parity Learning Problem}\label{parity-learning-problem}}
 
-\hypertarget{whitespace}{%
-\subsection{Whitespace}\label{whitespace}}
-
-Be careful with your spacing.
-While whitespace largely is ignored, it does at times give markdown signals as to how to proceed.
-As a habit, try to keep everything left aligned whenever possible, especially as you type a new paragraph.
-In other words, there is no need to indent basic text in the Rmd document (in fact, it might cause your text to do funny things if you do).
-
-\hypertarget{italics-and-bold}{%
-\subsection{Italics and bold}\label{italics-and-bold}}
-
-\begin{itemize}
-\tightlist
-\item
-  \emph{Italics} are done like *this* or \_this\_
-\item
-  \textbf{Bold} is done like **this** or \_\_this\_\_
-\item
-  \textbf{\emph{Bold and italics}} is done like ***this***, \_\_\_this\_\_\_, or (the most transparent solution, in my opinion) **\_this\_**
-\end{itemize}
-
-\hypertarget{inline-code}{%
-\subsection{Inline code}\label{inline-code}}
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{Inline\ code} is created with backticks like \texttt{\textasciigrave{}this\textasciigrave{}}
-\end{itemize}
-
-\hypertarget{sub-and-superscript}{%
-\subsection{Sub and superscript}\label{sub-and-superscript}}
-
-Sub\textsubscript{2} and super\textsuperscript{2} script is created like this\textasciitilde2\textasciitilde{} and this\^{}2\^{}
-
-\hypertarget{strikethrough}{%
-\subsection{Strikethrough}\label{strikethrough}}
-
-\begin{itemize}
-\tightlist
-\item
-  \sout{Strikethrough} is done \textasciitilde\textasciitilde like this\textasciitilde\textasciitilde{}
-\end{itemize}
-
-\hypertarget{escaping-aka-what-if-i-need-an-actual-asterisk}{%
-\subsection{`Escaping' (aka ``What if I need an actual asterisk?'')}\label{escaping-aka-what-if-i-need-an-actual-asterisk}}
-
-\begin{itemize}
-\tightlist
-\item
-  To include an actual *, \_ or \textbackslash, add another \textbackslash{} in front of them: \textbackslash*, \textbackslash\_, \textbackslash\textbackslash{}
-\end{itemize}
-
-\hypertarget{endash-emdash}{%
-\subsection{Endash (--), emdash (---)}\label{endash-emdash}}
-
-\begin{itemize}
-\tightlist
-\item
-  -- and --- with -\/- and -\/-\/-
-\end{itemize}
-
-\hypertarget{blockquotes}{%
-\subsection{Blockquotes}\label{blockquotes}}
-
-Do like this:
-
-\begin{quote}
-Put a \textgreater{} in front of the line.
-\end{quote}
-
-\hypertarget{headings}{%
-\subsection{Headings}\label{headings}}
-
-Section headers are created with \#'s of increasing number, i.e.~
-
-\begin{itemize}
-\tightlist
-\item
-  \# First-level heading
-\item
-  \#\# Second-level heading
-\item
-  \#\#\# Etc.
-\end{itemize}
-
-In PDF output, a level-five heading will turn into a paragraph heading, i.e.~\texttt{\textbackslash{}paragraph\{My\ level-five\ heading\}}, which appears as bold text on the same line as the subsequent paragraph.
-
-\hypertarget{lists}{%
-\subsection{Lists}\label{lists}}
-
-Unordered list by starting a line with an * or a -:
-
-\begin{itemize}
-\tightlist
-\item
-  Item 1
-\item
-  Item 2
-\end{itemize}
-
-Ordered lists by starting a line with a number.
-Notice that you can mislabel the numbers and \emph{Markdown} will still make the order right in the output:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Item 1
-\item
-  Item 2
-\end{enumerate}
-
-To create a sublist, indent the values a bit (at least four spaces or a tab):
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Item 1
-\item
-  Item 2
-\item
-  Item 3
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Item 3a
-  \item
-    Item 3b
-  \end{itemize}
-\end{enumerate}
-
-\hypertarget{line-breaks}{%
-\subsection{Line breaks}\label{line-breaks}}
-
-The official \emph{Markdown} way to create line breaks is by ending a line with more than two spaces.
-
-Roses are red.
-Violets are blue.
-
-This appears on the same line in the output, because we didn't add spaces after red.
-
-Roses are red.\\
-Violets are blue.
-
-This appears with a line break because I added spaces after red.
-
-I find this is confusing, so I recommend the alternative way: Ending a line with a backslash will also create a linebreak:
-
-Roses are red.\\
-Violets are blue.
-
-To create a new paragraph, you put a blank line.
-
-Therefore, this line starts its own paragraph.
-
-\hypertarget{hyperlinks}{%
-\subsection{Hyperlinks}\label{hyperlinks}}
-
-\begin{itemize}
-\tightlist
-\item
-  \href{https://www.google.com}{This is a hyperlink} created by writing the text you want turned into a clickable link in \texttt{{[}square\ brackets\ followed\ by\ a{]}(https://hyperlink-in-parentheses)}
-\end{itemize}
-
-\hypertarget{footnotes}{%
-\subsection{Footnotes}\label{footnotes}}
-
-\begin{itemize}
-\tightlist
-\item
-  Are created\footnote{my footnote text} by writing either \^{}{[}my footnote text{]} for supplying the footnote content inline, or something like \texttt{{[}\^{}a-random-footnote-label{]}} and supplying the text elsewhere in the format shown below \footnote{This is a random test.}:
-\end{itemize}
-
-\texttt{{[}\^{}a-random-footnote-label{]}:\ This\ is\ a\ random\ test.}
-
-\hypertarget{comments}{%
-\subsection{Comments}\label{comments}}
-
-To write comments within your text that won't actually be included in the output, use the same syntax as for writing comments in HTML. That is, \textless!-\/- this will not be included in the output -\/-\textgreater.
-
-\hypertarget{math}{%
-\subsection{Math}\label{math}}
-
-The syntax for writing math is stolen from LaTeX. To write a math expression that will be shown \textbf{inline}, enclose it in dollar signs.
-- This: \$A = \textbackslash pi*r\^{}\{2\}\$ Becomes: \(A = \pi*r^{2}\)
-
-To write a math expression that will be shown in a block, enclose it in two dollar signs.\\
-This: \$\$A = \textbackslash pi*r\^{}\{2\}\$\$
-
-Becomes:
-\[A = \pi*r^{2}\]
-
-To create numbered equations, put them in an `equation' environment and give them a label with the syntax \texttt{(\textbackslash{}\#eq:label)}, like this:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{\textbackslash{}begin}\NormalTok{\{}\ExtensionTok{equation}\NormalTok{\}}\SpecialStringTok{ }
-\SpecialStringTok{  f}\SpecialCharTok{\textbackslash{}left}\SpecialStringTok{(k}\SpecialCharTok{\textbackslash{}right}\SpecialStringTok{) = }\SpecialCharTok{\textbackslash{}binom}\SpecialStringTok{\{n\}\{k\} p^k}\SpecialCharTok{\textbackslash{}left}\SpecialStringTok{(1-p}\SpecialCharTok{\textbackslash{}right}\SpecialStringTok{)^\{n-k\}}
-\SpecialStringTok{  (}\SpecialCharTok{\textbackslash{}#}\SpecialStringTok{eq:binom)}
-\KeywordTok{\textbackslash{}end}\NormalTok{\{}\ExtensionTok{equation}\NormalTok{\} }
-\end{Highlighting}
-\end{Shaded}
-
-Becomes:
-\begin{equation}
-f\left(k\right)=\binom{n}{k}p^k\left(1-p\right)^{n-k}
-\label{eq:binom}
-\end{equation}
-
-For more (e.g.~how to theorems), see e.g.~the documentation on \href{https://bookdown.org/yihui/bookdown/markdown-extensions-by-bookdown.html\#equations}{bookdown.org}
-
-\hypertarget{code}{%
-\section{Executable code chunks}\label{code}}
-
-The magic of R Markdown is that we can add executable code within our document to make it dynamic.
-
-We do this either as \emph{code chunks} (generally used for loading libraries and data, performing calculations, and adding images, plots, and tables), or \emph{inline code} (generally used for dynamically reporting results within our text).
-
-The syntax of a code chunk is shown in Figure \ref{fig:chunk-parts}.
-
-\begin{figure}[H]
-\includegraphics[width=1\linewidth]{figures/sample-content/chunk-parts} \caption{Code chunk syntax}\label{fig:chunk-parts}
-\end{figure}
-
-Common chunk options include (see e.g.~\href{https://bookdown.org/yihui/rmarkdown/r-code.html}{bookdown.org}):
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{echo}: whether or not to display code in knitted output
-\item
-  \texttt{eval}: whether or to to run the code in the chunk when knitting
-\item
-  \texttt{include}: whether to include anything from the from a code chunk in the output document
-\item
-  \texttt{fig.cap}: figure caption
-\item
-  \texttt{fig.scap}: short figure caption, which will be used in the `List of Figures' in the PDF front matter
-\end{itemize}
-
-\textbf{IMPORTANT}: Do \emph{not} use underscoores in your chunk labels - if you do, you are likely to get an error in PDF output saying something like ``! Package caption Error: \textbackslash caption outside float''.
-
-\hypertarget{setup-chunks---setup-images-plots}{%
-\subsection{Setup chunks - setup, images, plots}\label{setup-chunks---setup-images-plots}}
-
-An R Markdown document usually begins with a chunk that is used to \textbf{load libraries}, and to \textbf{set default chunk options} with \texttt{knitr::opts\_chunk\$set}.
-
-In your thesis, this will probably happen in \textbf{index.Rmd} and/or as opening chunks in each of your chapters.
-
-\begin{verbatim}
-```{r setup, include=FALSE}
-# don't show code unless we explicitly set echo = TRUE
-knitr::opts_chunk$set(echo = FALSE)
-
-library(tidyverse)
-```
-\end{verbatim}
-
-\hypertarget{including-images}{%
-\subsection{Including images}\label{including-images}}
-
-Code chunks are also used for including images, with \texttt{include\_graphics} from the \texttt{knitr} package, as in Figure \ref{fig:oxford-logo}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{knitr}\OperatorTok{::}\KeywordTok{include_graphics}\NormalTok{(}\StringTok{"figures/sample-content/beltcrest.png"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+In \cite{DBLP:journals/corr/abs-2002-07400}, authors questioned how far neural networks could go beyond the linear models. They did this by focusing on parities that have a complex family of target functions. They demonstrated that this family could be approximated by a two-layer network trained with SGD, but not by lazy methods. This study brings an explanation of why neural networks' performance is better than linear methods, and it proves neural networks' learning capacities are beyond lazy methods.\\
+Experiments are performed on the MNIST dataset by imitating the parity problem. The task is: given the parameter k (defines the number of digits to be stacked together that is chosen uniformly from the dataset), determine if the sum of the digits is odd or even. When \(k=1\), it is a simplified version of the standard MNIST task to find if a digit is even or odd. Experiment results showed that all models, including the lazy ones, reached a similar performance where the neural network slightly outperformed others. On the other hand, the problem becomes more difficult for the case \(k=3\) because models need to compute the parity of the digits' sum. In this case, there is a drastic gap between the neural network and lazy methods.\\
+Since our goal is comparing DFA and BP on this particular problem, reproducing the results from \cite{DBLP:journals/corr/abs-2002-07400} is unavoidable. The same configurations are used with minor differences. The network has only a hidden layer with \(512\) neurons. For the last layer, sigmoid is used as a non-linear activation function. For the hidden layer, reLU is used. BCE is preferred as a loss function, and \(10^{-3}\) is set to weight decay. We also used SGD to observe how much Adadelta improves, and for the case \(k=3\), we performed a simple hyper-parameter tuning process to get a decent learning rate for each method. Same values are used for the case \(k=1\). The hyperparameter tuning process is the following. First, we define the parameter space, later we run with all different learning rates, and we compare these runs by the average of test accuracy of the last ten epochs, and we choose the highest one. It is also crucial to mention that, at each epoch, train data is recreated to boost the available data for the models. The same is also performed for test data to have an unbiased estimation of test accuracy.
 
 \begin{figure}
 
-{\centering \includegraphics[width=0.5\linewidth]{figures/sample-content/beltcrest} 
+{\centering \includegraphics[width=1\linewidth]{figures/reproduce} 
 
 }
 
-\caption{Oxford logo}\label{fig:oxford-logo}
+\caption{Reproduced MNIST parity experiment result from \cite{DBLP:journals/corr/abs-2002-07400}}\label{fig:MNISTparity}
 \end{figure}
 
-Useful chunk options for figures include:
+\noindent The reproduced result can be observed in figure \ref{fig:MNISTparity} with example dataset. Similar to results from \cite{DBLP:journals/corr/abs-2002-07400}, all the methods succeed learning for \(k=1\) case. However, adadelta and SGD slightly outperformed lazy methods in this setting. In the case of \(k=3\), adadelta and SGD almost reach \(80\%\), but the performance of lazy methods doesn't go beyond a random guess.
 
-\begin{itemize}
-\tightlist
-\item
-  \texttt{out.width} (use with a percentage) for setting the image size
-\item
-  if you've got an image that gets waaay to big in your output, it will be constrained to the page width by setting \texttt{out.width\ =\ "100\%"}
-\end{itemize}
+\hypertarget{random-data}{%
+\section{Random Data}\label{random-data}}
 
-\hypertarget{figure-rotation}{%
-\subsubsection*{Figure rotation}\label{figure-rotation}}
-\addcontentsline{toc}{subsubsection}{Figure rotation}
-
-You can use the chunk option \texttt{out.extra} to rotate images.
-
-The syntax is different for LaTeX and HTML, so for ease we might start by assigning the right string to a variable that depends on the format you're outputting to:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ControlFlowTok{if}\NormalTok{ (knitr}\OperatorTok{::}\KeywordTok{is_latex_output}\NormalTok{())\{}
-\NormalTok{  rotate180 <-}\StringTok{ "angle=180"}
-\NormalTok{\} }\ControlFlowTok{else}\NormalTok{ \{}
-\NormalTok{  rotate180 <-}\StringTok{ "style='transform:rotate(180deg);'"}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-Then you can reference that variable as the value of \texttt{out.extra} to rotate images, as in Figure \ref{fig:oxford-logo-rotated}.
-
-\begin{figure}
-
-{\centering \includegraphics[width=0.5\linewidth,angle=180]{figures/sample-content/beltcrest} 
-
-}
-
-\caption{Oxford logo, rotated}\label{fig:oxford-logo-rotated}
-\end{figure}
-
-\hypertarget{including-plots}{%
-\subsection{Including plots}\label{including-plots}}
-
-Similarly, code chunks are used for including dynamically generated plots.
-You use ordinary code in R or other languages - Figure \ref{fig:cars-plot} shows a plot of the \texttt{cars} dataset of stopping distances for cars at various speeds (this dataset is built in to \textbf{R}).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{cars }\OperatorTok{%>%}\StringTok{ }
-\StringTok{  }\KeywordTok{ggplot}\NormalTok{() }\OperatorTok{+}
-\StringTok{    }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ speed, }\DataTypeTok{y =}\NormalTok{ dist) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{geom_point}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}
-\centering
-\includegraphics{_main_files/figure-latex/cars-plot-1.pdf}
-\caption{\label{fig:cars-plot}A ggplot of car stuff}
-\end{figure}
-
-Under the hood, plots are included in your document in the same way as images - when you build the book or knit a chapter, the plot is automatically generated from your code, saved as an image, then included into the output document.
-
-\hypertarget{including-tables}{%
-\subsection{Including tables}\label{including-tables}}
-
-Tables are usually included with the \texttt{kable} function from the \texttt{knitr} package.
-
-Table \ref{tab:cars-table} shows the first rows of that cars data - read in your own data, then use this approach to automatically generate tables.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{cars }\OperatorTok{%>%}\StringTok{ }
-\StringTok{  }\KeywordTok{head}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }
-\StringTok{  }\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(}\DataTypeTok{caption =} \StringTok{"A knitr kable table"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{table}
-
-\caption{\label{tab:cars-table}A knitr kable table}
-\centering
-\begin{tabular}[t]{r|r}
-\hline
-speed & dist\\
-\hline
-4 & 2\\
-\hline
-4 & 10\\
-\hline
-7 & 4\\
-\hline
-7 & 22\\
-\hline
-8 & 16\\
-\hline
-9 & 10\\
-\hline
-\end{tabular}
-\end{table}
-
-\begin{itemize}
-\tightlist
-\item
-  Gotcha: when using \href{https://www.rdocumentation.org/packages/knitr/versions/1.21/topics/kable}{\texttt{kable}}, captions are set inside the \texttt{kable} function
-\item
-  The \texttt{kable} package is often used with the \href{https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html}{\texttt{kableExtra}} package
-\end{itemize}
-
-\hypertarget{control-positioning}{%
-\subsection{Control positioning}\label{control-positioning}}
-
-One thing that may be annoying is the way \emph{R Markdown} handles ``floats'' like tables and figures.
-In your PDF output, LaTeX will try to find the best place to put your object based on the text around it and until you're really, truly done writing you should just leave it where it lies.
-
-In general, you should allow LaTeX to do this, but if you really \emph{really} need a figure to be positioned where you put in the document, then you can make LaTeX attempt to do this with the chunk option \texttt{fig.pos="H"}, as in Figure \ref{fig:oxford-logo-controlled}:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{knitr}\OperatorTok{::}\KeywordTok{include_graphics}\NormalTok{(}\StringTok{"figures/sample-content/beltcrest.png"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics[width=0.5\linewidth]{figures/sample-content/beltcrest} 
-
-}
-
-\caption{An Oxford logo that LaTeX will try to place at this position in the text}\label{fig:oxford-logo-controlled}
-\end{figure}
-
-As anyone who has tried to manually play around with the placement of figures in a Word document knows, this can have lots of side effects with extra spacing on other pages, etc.
-Therefore, it is not generally a good idea to do this - only do it when you really need to ensure that an image follows directly under text where you refer to it (in this document, I needed to do this for Figure \ref{fig:latex-font-sizing} in section \ref{max-power}).
-For more details, read the relevant section of the \href{https://bookdown.org/yihui/rmarkdown-cookbook/figure-placement.html}{R Markdown Cookbook}.
-
-\hypertarget{executable-inline-code}{%
-\section{Executable inline code}\label{executable-inline-code}}
-
-`Inline code' simply means inclusion of code inside text.
-The syntax for doing this is \texttt{\textasciigrave{}r\ R\_CODE\textasciigrave{}}
-For example, \texttt{\textasciigrave{}r\ 4\ +\ 4\textasciigrave{}} will output 8 in your text.
-
-You will usually use this in parts of your thesis where you report results - read in data or results in a code chunk, store things you want to report in a variable, then insert the value of that variable in your text.
-For example, we might assign the number of rows in the \texttt{cars} dataset to a variable:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{num_car_observations <-}\StringTok{ }\KeywordTok{nrow}\NormalTok{(cars)}
-\end{Highlighting}
-\end{Shaded}
-
-We might then write:\\
-``In the \texttt{cars} dataset, we have \texttt{\textasciigrave{}r\ num\_car\_observations\textasciigrave{}} observations.''
-
-Which would output:\\
-``In the \texttt{cars} dataset, we have 50 observations.''
-
-\hypertarget{executable-code-in-other-languages-than-r}{%
-\section{Executable code in other languages than R}\label{executable-code-in-other-languages-than-r}}
-
-If you want to use other languages than R, such as Python, Julia C++, or SQL, see \href{https://bookdown.org/yihui/rmarkdown-cookbook/other-languages.html}{the relevant section of the \emph{R Markdown Cookbook}}
+TODO: Write how this data generated, why it's interesting and why it is suitable for testing learning dynamics of the methods
 
 \hypertarget{chap:chapter_3}{%
 \chapter{Citations, cross-references, and collaboration}\label{chap:chapter_3}}
@@ -2685,14 +2248,14 @@ All hail LaTeX. (If you're reading the HTML version, you won't see any indentati
 \hypertarget{chap:appendix_a}{%
 \chapter{Backpropagation with Binary Cross-Entropy}\label{chap:appendix_a}}
 
-Let's consider a simple binary classification task, it is common to use a network with a single logistic output with the binary cross-entropy loss function and for the sake of simplicity let's assume that there is only one hidden layer.
+Let's consider a simple binary classification task. It is common to use a network with a single logistic output with the binary cross-entropy loss function and for the sake of simplicity, let's assume that there is only one hidden layer.
 \[
 \begin{aligned}
 BCE=-\sum_{i=1}^{n o u t}\left(y_i \log \left(\hat{y}_i \right)+\left(1-y_i\right) \log \left(1-\hat{y}_i\right)\right)
 \end{aligned}
 \]
 
-where \(y\) is the ground truth and \(\hat{y}\) is the output of the network. After having the loss function let's continue with the forward pass.
+Where \(y\) is the ground truth and \(\hat{y}\) is the output of the network. After having the loss function, let's continue with the forward pass.
 
 \[
 \begin{aligned} 
@@ -2701,7 +2264,7 @@ h_k &= f(a_{k})
 \end{aligned}
 \]
 
-where, \(w_k\) is the weight, \(b_{k}\) is the bias term, \(h_k\) is the output of the layer (which means that \(h_0 = X\) and \(h_2 = \hat{y}\)) and f is the non linear function. Please note that for last layer logistic function is used whereas for hidden layer reLU is used as non linear functions.\\
+Where, \(w_k\) is the weight, \(b_{k}\) is the bias term, \(h_k\) is the output of the layer (which means that \(h_0 = X\) and \(h_2 = \hat{y}\)) and f is the non linear function. Please note that for last layer logistic function is used whereas for hidden layer reLU is used as non linear functions.\\
 We can compute the derivative of the weights by using the chain rule.
 
 \[
@@ -2716,14 +2279,14 @@ Computing each factor in the term, we have:
 \frac{\partial BCE}{\partial \hat{y}} &=\frac{-y}{\hat{y}}+\frac{1-y}{1-\hat{y}} \\
 &=\frac{\hat{y}-y}{\hat{y}\left(1-\hat{y}\right)} \\
 \frac{\partial \hat{y}}{\partial a_{2}} &=\hat{y}\left(1-\hat{y}\right) \\
-\frac{\partial a_{2}}{\partial w_{2}} &=h_{1}
+\frac{\partial a_{2}}{\partial w_{2}} &=h_{1}^T
 \end{aligned}
 \]
-which gives us:
+Which gives us:
 \[
 \frac{\partial BCE}{\partial w_{2}}=h_{1}^T\left(\hat{y}-y\right)
 \]
-Derivative of the \(w_1\) with respect to loss function can be calculated as the following:
+Derivative of the \(w_1\) concerning loss function can be calculated as the following:
 
 \[
 \begin{aligned} 
@@ -2735,18 +2298,18 @@ Compute each factor in the term again, we have:
 \[
 \begin{aligned}
 \frac{\partial BCE}{\partial h_1} &= \frac{\partial BCE}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial a_{2}} \frac{\partial a_{2}}{\partial h_{1}}  \\
-&= \left(\hat{y}-y\right) w_{2} \\
+&= \left(\hat{y}-y\right) w_{2}^T \\
 \frac{\partial h_1}{\partial a_{1}} &=f'(a_1) \\
-\frac{\partial a_{1}}{\partial h_{1}} &=X
+\frac{\partial a_{1}}{\partial h_{1}} &=X^T
 \end{aligned}
 \]
-which gives us:
+Which gives us:
 \[
 \begin{aligned}
 \frac{\partial BCE}{\partial w_{1}}= \left(X\right)^T\left(\hat{y}-y\right)\left(w_{2}^T\right) \odot f'(a_1)
 \end{aligned}
 \]
-where \(\odot\) is element-wise multiplication. Similarly, bias terms can be calculated by following:
+Where \(\odot\) is element-wise multiplication, similarly, bias terms can be calculated by following:
 
 \[
 \begin{aligned} 
@@ -2761,13 +2324,7 @@ where \(\odot\) is element-wise multiplication. Similarly, bias terms can be cal
 &= \left(\hat{y}-y\right)\left(w_{2}^T\right) \odot f'(a_1)
 \end{aligned}
 \]
-After having all these results, we can simply update the parameters (weights and biases) by using gradient descent and its variants as follows:
-
-\[
-\begin{aligned} 
-\text{parameter} &= \text{parameter} - \text{step size} \times \frac{\partial BCE}{\partial \text(parameter)}  \\
-\end{aligned}
-\]
+After having all these results, we can update the parameters (weights and biases) using gradient descent and its variants.
 
 \hypertarget{reproducibility}{%
 \chapter{Reproducibility}\label{reproducibility}}
