@@ -82,7 +82,7 @@ Theoretical results present that especially over-parameterized ANNs (not limited
 Lazy methods are not at the center of the experiments. Hence, detailed explanations of these methods are out of scope in this study, but they have been presented in \cite{DBLP:journals/corr/abs-2002-07400}, and they fail to learn the parities in a more complex setting. Hence, they are implemented too for completeness, and it is essential to embody at least a simple definition of them and how they are practically implemented.
 
 ### Neural Tangent Kernel
-Studies showed that neural networks under some conditions are equivalent to gaussian process, and they mathematically approximate the kernel machines if they are trained with gradient descent \cite{lee2018deep, domingos2020model}. Authors of \cite{DBLP:journals/corr/abs-1806-07572} proved that during the training phase, ANNs follow the kernel gradient of the functional loss concerning a new kernel. They named this kernel a Neural Tangent Kernel (NTK). In other words, NTK  is a kernel that describes the evolution of an ANN during the learning phase and, it is beneficial to explain the training of ANNs in function space rather than parameters space. It allows us to work with infinite width neural networks using the kernel trick, and it helps us understand the dynamics of learning and interference.\
+Studies showed that neural networks under some conditions are equivalent to gaussian process, and they mathematically approximate the kernel machines if they are trained with gradient descent \cite{lee2018deep, domingos2020model}. Authors of \cite{DBLP:journals/corr/abs-1806-07572} proved that during the training phase, ANNs follow the kernel gradient of the functional loss concerning a new kernel. They named this kernel a Neural Tangent Kernel (NTK). In other words, NTK  is a kernel that describes the evolution of an ANN during the learning phase, and it is beneficial to explain the training of ANNs in function space rather than parameters space. It allows us to work with infinite width neural networks using the kernel trick, and it helps us understand the dynamics of learning and interference.\
 Empirical results demonstrated that the NTK regime performs worse than BP on standard tasks like MNIST. However, NTK is still worth investigating further to understand ANNs' training dynamics since it brings a new perspective on the training phase.\
 Basic practical implementation of NTK is obtained with three steps. Initially, an extra layer is created with the exact dimensions of the first layer. The second in the forward pass concatenation of these two layers' parameters are given as input to the gated linear unit with $1$. Lastly, in the parameters update phase, the extra layer is not considered. With these adjustments, we decoupled the gating from the linearity of the ReLU, and we kept the gates fixed during training.
 
@@ -157,13 +157,17 @@ The root means squared error of the parameters is:
 $$
 \operatorname{RMS}[\Delta \theta]_{t}=\sqrt{E\left[\Delta \theta^{2}\right]_{t}+\epsilon}
 $$
-Since $\operatorname{RMS}[\Delta \theta]_{t}$ is unknown at time step $t$, it is approximated with previous time step. Learning rate is replaced with this term which finally yields the update rule of Adadelta:
+Since $\operatorname{RMS}[\Delta \theta]_{t}$ is unknown at time step $t$, it is approximated with previous time step. 
 $$
 \theta_{t+1}=\theta_{t} - \frac{R M S[\Delta \theta]_{t-1}}{R M S[g]_{t}} g_{t}
 $$
+Normally this final update would remove the need of learning rate but we follow the same approach as in Pytorch implementation \cite{NEURIPS2019_9015} so last term is scaled with learning rate which finally yields to update rule of Adadelta:
+$$
+\theta_{t+1}=\theta_{t} - \eta \frac{R M S[\Delta \theta]_{t-1}}{R M S[g]_{t}} g_{t}
+$$
 
 #### RMSProp
-\noindent RMSProp is another method that is offered to solve the decreasing learning rate problem of adagrad. Geoffrey Hinton proposed it in his neural networks for machine learning class. It is identical to the first update rule of Adadelta that is:
+\noindent RMSProp is another method that is offered to solve the decreasing learning rate problem of adagrad. Geoffrey Hinton proposed it in his neural networks for machine learning class^[http://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf]. It is identical to the first update rule of Adadelta that is:
 $$
 \begin{aligned}
 E\left[g^{2}\right]_{t}=\rho E\left[g^{2}\right]_{t-1}+(1-\rho) g_{t}^{2} \\
@@ -193,4 +197,4 @@ $$
 \theta_{t+1}=\theta_{t}-\frac{\eta}{\sqrt{\hat{v}_{t}}+\epsilon} \hat{m}_{t}
 $$
 
-\noindent With ADAM, we completed the theoretical overview of the methods that are used for the experiments. We started with the simple definition of BP, clarified why it is convenient to train ANNs with BP. Also, we explained how the error is propagated in BP and how gradients are calculated mathematically. Lastly, we mentioned the drawbacks of BP. Then, we moved to DFA by slightly changing the error propagation mechanism of BP, and we adapted this change to our mathematical foundations. We specified which drawbacks of BP were addressed by DFA, and we also mentioned the limitations of DFA. After that, lazy methods are summarized since they are implemented and used in experiments of previous studies. Finally, optimizers are described in general. We mentioned why they are important, and lastly, we presented their update rules and drawbacks.
+\noindent With ADAM, we completed the theoretical overview of the methods that are used for the experiments. We started with the simple definition of BP, we explained how the error is propagated in BP and how gradients are calculated mathematically. We also mentioned the drawbacks of BP. Then, we moved to DFA by slightly changing the error propagation mechanism of BP, and we adapted this change to our mathematical foundations. We specified which drawbacks of BP were addressed by DFA, and we also mentioned the limitations of DFA. After that, lazy methods are summarized since they are implemented and used in experiments of previous studies. Finally, optimizers are described in general. We mentioned why they are important and how they might increase the convergence property, and lastly, we presented their update rules and drawbacks.
