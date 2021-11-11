@@ -377,11 +377,12 @@ Although nowadays BP is the workhorse algorithm for training ANNs, it has some d
 This thesis investigates the learning structures through BP and one of the alternative algorithm called direct feedback alignment (DFA) on the particular problem. Unlike BP, the error is propagated through a fixed random matrix instead of the layers' weights in DFA. Then network learns how to make this feedback useful \cite{nøkland2016direct}. Due to this error propagation mechanism, DFA is considered more biologically plausible than BP, and it opens the gate of parallelism in the training phase of ANNs.\\
 The main problem at hand is known as the parity learning problem. Previous results showed that these parities are learnable by BP and lazy methods in a more simple setting, whereas it is only learnable by BP in a more complex setting \cite{DBLP:journals/corr/abs-2002-07400}. That is why it is intriguing to test alternative algorithms on this problem to understand their learning dynamics and capabilities.\\
 The experiment results might lead us to three possible outcomes. First, we might acquire a similar performance as BP. If it is the case, it would be beneficial to test DFA and BP on a more challenging problem. Second, there might be a gap between BP and DFA then it would be intriguing to understand where the difference is coming from and how we can close this gap. Third, the alternative algorithm might not even learn, and in this case, it is interesting to ask what makes a problem learnable by BP but not DFA. In all cases, results should help to understand the dynamics of learning of both methods.\\
-For applying BP and DFA in a more realistic setting, experiments are performed on the MNIST dataset by imitating the parity learning problem. After putting DFA to this frame, the reason behind the results is interpreted, and possible improvements are motivated and implemented.\\
+For applying BP and DFA in a more realistic setting, experiments are performed on the MNIST dataset by imitating the parity learning problem as it is described in \cite{DBLP:journals/corr/abs-2002-07400}. After putting DFA to this frame, the reason behind the results is interpreted, and possible improvements are motivated and implemented.\\
 Chapter \ref{chap:chapter_1} constructs the theoretical bases of the algorithms that are used for the experiments. These bases are composed of simple definitions, mathematical foundations, and the drawbacks of the algorithms. They help to dig deeper into the learning structures of the training algorithms. It is expected to have more control over their learning behaviors by adjusting components of these foundations. Also, it is beneficial to have these theoretical bases for acquiring a better understanding of the further interventions. Moreover, these theoretical foundations are used to implement the algorithms from scratch to use in experiments.\\
 Chapter \ref{chap:chapter_2} introduces the parity learning problem at hand. First, the formal definition of the problem is demonstrated then how the problem is imitated by using the MNIST dataset is explained in detail. This part is also highly correlated with the training phase of the algorithms. Later experiment results from \cite{DBLP:journals/corr/abs-2002-07400} are replicated to have a concrete picture of previous studies.\\
-Chapter \ref{chap:chapter_3} presents results of the experiments. This chapter is the main contribution of the study. The first experiment is testing DFA on the same problem and observing the difference with BP. As it is specified before, depending on the experiment outcome, different further experiments are performed. Such as closing the gap between BP and DFA, if any, trying harder problems if we acquire similar results. Explain why DFA cannot learn the problem if we get a similar behavior as lazy methods. In addition to the main experiment, we performed side experiments that helped us understand the algorithms' learning dynamics. For instance, using different random matrices for DFA, comparing their results, and observing hidden representation of BP and DFA to understand if the networks learn the digits individually to calculate the parities or memorizes the data without knowing the digits.\\
-Chapter \ref{chap:chapter_4} wraps up the findings from experiments by summarizing the key findings. It creates a path for future studies that are not covered in this study.
+Chapter \ref{chap:chapter_3} presents the results of the experiments. This chapter is the main contribution of this study. The first experiment is testing DFA on the same problem and observing the difference with BP. As it is specified before, depending on the experiment outcome, different further experiments are performed. Such as closing the gap between BP and DFA, if any, and trying harder problems if we acquire similar results or explaining why DFA cannot learn the problem if we get a similar behavior as lazy methods. In addition to the main experiment, we performed side experiments because these side experiments might help us to improve the performance of the algorithms or they can be helpful to understand the learning dynamics of them. For instance, using different random matrices for DFA, trying adaptive optimization algorithms with BP and DFA, and observing hidden representation of BP and DFA to understand if the networks learn the digits individually to calculate the parities or memorizes the data without knowing the digits.\\
+TODO: Try to fix the conclusion reference\\
+\protect\hyperlink{chap:conc}{Conclusion} wraps up the findings from experiments by summarizing the key findings. It creates a path for future studies that are not covered in this study.
 
 \hypertarget{chap:chapter_1}{%
 \chapter{Theoretical Foundations}\label{chap:chapter_1}}
@@ -393,11 +394,11 @@ Chapter \ref{chap:chapter_4} wraps up the findings from experiments by summarizi
 
 BP is one of the first algorithms that show ANNs could learn hidden representations well. Numerous studies showed that ANNs trained with BP could capture similar information as biological neural networks (e.g., specific nodes learn the edges, corners). We need three components for BP, a dataset composed of input-output pairs, a network consisting of parameters (weights and biases), and it allows the input to flow through the network to have output. We need a loss function to measure the difference between the output of the network and the ground truth that we have from the dataset.\\
 The main goal of BP is computing the gradients of the loss function (a measure of difference) concerning the parameters of neural networks by using the chain rule. These gradients show how much the parameter needs to change (positively or negatively) to minimize the loss function. After efficiently calculating the gradients, we can adjust the network parameters using gradient descent or its variants.\\
-Although BP is an older idea, it earned popularity with \cite{Rumelhart:1986we} because it presented how BP can make a network to learn the representations. After this popularity, the community published numerous practical and theoretical papers that investigated the dynamics of BP. It would be repeat and infeasible to show all the aspects again. However, for completeness and a smoother transition from BP to DFA, it is beneficial to have visual and mathematical explanations showing how the algorithms propagate the errors and the weights. For the mathematical foundations, a binary classification task will be demonstrated with binary cross-entropy loss as an example in appendix \ref{chap:appendix_a}. This example is not chosen arbitrarily. Indeed the parity problem that MNIST imitates is a binary classification problem. In addition to this, equations from appendix \ref{chap:appendix_a} are used to implement BP from scratch to have more control over the process. Then the exact implementation is modified to obtain DFA. The same set of steps are valid for different loss functions and activation functions. Only the calculations will be slightly different. The general idea is the same: obtaining the gradients by calculating the derivative of the loss function concerning the parameters.
+Although BP is an older idea, it earned popularity with \cite{Rumelhart:1986we} because it presented how BP can make a network to learn the representations. After this popularity, the community published numerous practical and theoretical papers that investigated the dynamics of BP. It would be repeat and infeasible to show all the aspects again. However, for completeness and a smoother transition from BP to DFA, it is beneficial to have visual and mathematical explanations showing how the algorithms propagate the errors and the weights. For the mathematical foundations, a binary classification task will be demonstrated with binary cross-entropy (BCE) loss as an example in appendix \ref{chap:appendix_a}. This example is not chosen arbitrarily. Indeed the parity problem that MNIST imitates is a binary classification problem. In addition to this, equations from appendix \ref{chap:appendix_a} are used to implement BP from scratch to have more control over the process. Then the exact implementation is modified to obtain DFA. The same set of steps are valid for different loss functions and activation functions. Only the calculations will be slightly different. The general idea is the same: obtaining the gradients by calculating the derivative of the loss function concerning the parameters.
 
 \begin{figure}
 
-{\centering \includegraphics[width=0.3\linewidth]{figures/BP} 
+{\centering \includegraphics[width=0.3\linewidth]{figures/1_BP_Error} 
 
 }
 
@@ -439,7 +440,7 @@ Even though learning still occurs with random matrix and FA offers the solution 
 
 \begin{figure}
 
-{\centering \includegraphics[width=0.65\linewidth]{figures/DFA} 
+{\centering \includegraphics[width=0.65\linewidth]{figures/1_DFA_Error} 
 
 }
 
@@ -625,17 +626,17 @@ Then the update rule is very similar to Adadelta and RMSProp that is:
 \hypertarget{parity-learning-problem}{%
 \section{Parity Learning Problem}\label{parity-learning-problem}}
 
-In \cite{DBLP:journals/corr/abs-2002-07400}, authors questioned how far neural networks could go beyond the linear models. They did this by focusing on parities that have a complex family of target functions. They demonstrated that this family could be approximated by a two-layer network trained with SGD, but not by lazy methods. This study brings an explanation of why neural networks' performance is better than linear methods, and it proves neural networks' learning capacities are beyond lazy methods.\\
+In \cite{DBLP:journals/corr/abs-2002-07400}, authors questioned how far neural networks could go beyond the linear models. They did this by focusing on parities that have a complex family of target functions. They demonstrated that this family could be approximated by a two-layer network trained with Adadelta, but not by lazy methods. This study brings an explanation of why neural networks' performance is better than linear methods, and it proves neural networks' learning capacities are beyond lazy methods.\\
 Experiments are performed on the MNIST dataset by imitating the parity problem. The task is: given the parameter k (defines the number of digits to be stacked together that is chosen uniformly from the dataset), determine if the sum of the digits is odd or even. When \(k=1\), it is a simplified version of the standard MNIST task to find if a digit is even or odd. Experiment results showed that all models, including the lazy ones, reached a similar performance in \(k=1\) case where the neural network slightly outperformed others. On the other hand, the problem becomes more difficult for the case \(k=3\) because models need to compute the parity of the digits' sum. In this case, there is a drastic gap between the neural network and lazy methods. Because the predictions of lazy methods did not go beyond the random guess.\\
 Since our goal is comparing DFA and BP on this particular problem, reproducing the results from \cite{DBLP:journals/corr/abs-2002-07400} is unavoidable. The same configurations are used with minor differences and, they are implemented in Pytorch \cite{NEURIPS2019_9015}. The network has only a hidden layer with \(512\) neurons. For the last layer, sigmoid is used as a non-linear activation function. For the hidden layer, reLU is used. BCE is preferred as a loss function, and \(10^{-3}\) is set to weight decay. In addition to previous settings, we have also used SGD to observe how much Adadelta improves. For the case \(k=3\), we performed a simple hyper-parameter tuning process to get a decent learning rate for each method. Same learning rate values are used for the case \(k=1\). The hyperparameter tuning process is the following. First, we define the parameter space, later we run with all different learning rates, and we compare these runs by the average of test accuracy of the last ten epochs, and we choose the highest one. It is also crucial to mention that, at each epoch, train data is recreated to boost the available data for the models. The same is also performed for test data to have an unbiased estimation of test accuracy. It increases the available data because the creation of the data is stochastic. The process is the following: random images are sampled uniformly from the available dataset, then according to given parameter \(k\), these random images are horizontally stacked. Hence we have different dataset at each epoch that helps networks to learn and perform better. Finally, these images are normalized before training the networks, which is necessary for deep learning tasks.
 
 \begin{figure}
 
-{\centering \includegraphics[width=1\linewidth]{figures/reproduce} 
+{\centering \includegraphics[width=1\linewidth]{figures/2_k13_SGD_ada_BP_reproduced} 
 
 }
 
-\caption{Reproduced MNIST Parity Experiment Result \cite{DBLP:journals/corr/abs-2002-07400}}\label{fig:MNISTparity}
+\caption{Reproduced MNIST Parity Experiment \cite{DBLP:journals/corr/abs-2002-07400}}\label{fig:MNISTparity}
 \end{figure}
 
 \noindent The reproduced result can be observed in figure \ref{fig:MNISTparity}. Similar to results from \cite{DBLP:journals/corr/abs-2002-07400}, all the methods succeed learning for \(k=1\) case. However, adadelta and SGD slightly outperformed lazy methods in this setting. In the case of \(k=3\), adadelta and SGD almost reach \(80\%\), but the performance of lazy methods doesn't go beyond a random guess.~
@@ -661,7 +662,7 @@ Since the experiment details are clear now, it is time to test DFA on parity lea
 
 \begin{figure}
 
-{\centering \includegraphics[width=1\linewidth]{figures/BPvsDFA_SGD} 
+{\centering \includegraphics[width=1\linewidth]{figures/3_k13_SGD_DFAvsBP} 
 
 }
 
@@ -669,12 +670,12 @@ Since the experiment details are clear now, it is time to test DFA on parity lea
 \end{figure}
 
 \noindent We can observe the results in \ref{fig:BPvsDFA} with \(95\%\) confidence interval. In the case \(k=1\), although DFA outperforms the lazy methods, it is behind the BP. In the case \(k=3\), it is obvious that DFA performs much better than lazy methods. However, the gap between BP and DFA is a bit higher than \(k=1\) case. It seems like there is a limit for DFA to reach with SGD that is \(\%70\). The reason is that DFA has an additional task to accomplish, which is aligning with BP's teaching signals. In other words, the network loses time while trying to make teaching signals useful. This delays the convergence and causes performance lag. We can see that during the first iterations, DFA does not converge fast enough to catch up with BP, and it always stays behind the BP.\\
-The thrilling question is, is there a performance limit for DFA to reach, and can we get similar performance as BP by making some changes? For answering the first question, it is better to run DFA for more epochs to see if it can reach a similar performance as BP. Because with longer training, DFA will have time to align and converge. It would be convenient to test DFA with different random matrices to observe any improvement for the second question. Because it is clear that learning in DFA is strongly dependent on random matrix. Besides, it is interesting to test if DFA can learn with a different types of random matrices. During the learning rate phase of DFA, we noticed that it is susceptible to the learning rate. Having a small learning rate caused no convergence, and larger learning rates showed over-fitting within specified epoch numbers. Therefore we can use adaptive methods to have better convergence properties both in BP and DFA because these methods are specifically good at adjusting the learning rate, which is more difficult to tune for DFA than BP.\\
+The thrilling question is, is there a performance limit for DFA to reach, and can we get similar performance as BP by making some changes? For answering the first question, it is better to run DFA for more epochs to see if it can reach a similar performance as BP. Because with longer training, DFA will have time to align and converge. It would be convenient to test DFA with different random matrices to observe any improvement for the second question. Because it is clear that learning in DFA is strongly dependent on random matrix. Besides, it is interesting to test if DFA can learn with a different types of random matrices. During the learning rate phase of DFA, we noticed that it is susceptible to the learning rate. Having a small learning rate caused no convergence, and larger learning rates showed over-fitting within specified epoch numbers. Therefore we can use adaptive methods to have better convergence properties both in BP and DFA. These methods are specifically good at adjusting the learning rate, which is more difficult to tune for DFA than BP.\\
 \noindent We trained DFA for 50 epochs with a tuned learning rate to observe if it can reach a similar performance as BP. At the same time, alignment between the random matrix and the transpose of the weight matrix is plotted. This alignment is measured by using the cosine similarity.
 
 \begin{figure}
 
-{\centering \includegraphics[width=1\linewidth]{figures/DFA_50epochs} 
+{\centering \includegraphics[width=1\linewidth]{figures/3_k3_SGD_DFA_Alingment} 
 
 }
 
@@ -687,7 +688,7 @@ Among uniform random matrix, three different random matrices are tested. They ar
 
 \begin{figure}
 
-{\centering \includegraphics[width=1\linewidth]{figures/DFARandomMatrices} 
+{\centering \includegraphics[width=1\linewidth]{figures/3_k3_DFA_RandomMatrices} 
 
 }
 
@@ -695,26 +696,17 @@ Among uniform random matrix, three different random matrices are tested. They ar
 \end{figure}
 
 \noindent From figure \ref{fig:DFARandomMatrices}, we can observe that DFA can learn with any random matrices. However, it is essential to specify that learning rates for each random matrix are tuned and drastically different. Apart from standard uniform, the rest of the random matrices achieved similar performances, but they are still behind the BP. However, thanks to these results, we can see that DFA is highly sensitive to the learning rate. Because during the tuning phase, small learning rates did not converge within the specified epoch number. On the other hand, high learning rates demonstrated overfitting. Therefore, since adaptive methods have better convergence properties, they may increase the performance of DFA as they did in BP. For the rest of the DFA experiments, the random matrix is uniformly initialized since there is no significant improvement with other initializations.\\
-\noindent Following the previous deduction, various adaptive methods are tested on the parity learning problem for BP and DFA. Their learning rates are tuned, as it is explained in the previous chapter. For the experiments, they are run three times, and their final test accuracies are plotted. The results are presented in figure \ref{mainExperiment}.
+\noindent Following the previous deduction, various adaptive methods are tested on the parity learning problem for BP and DFA. Their learning rates are tuned, as it is explained in the previous chapter. For the experiments, they are run three times, and their final test accuracies are plotted. The results are presented in figure \ref{fig:mainExperiment}.
 
-\begin{figure}
-
-{\centering \includegraphics[width=1\linewidth]{figures/mainExperiment} 
-
-}
-
-\caption{DFA and BP on Parity Problem with Adaptive Methods}\label{fig:mainExperiment}
-\end{figure}
-
-\noindent As expected, adaptive methods improve the final test accuracy significantly for both BP and DFA. On average, DFA is still behind the BP, but with RMSProp and Adadelta, the gap is much smaller than with plain SGD. In other words, we can say that some adaptive methods help DFA more than BP with a higher standard deviation. With the last experiment, we could close the gap between BP and DFA on the parity learning problem thanks to adaptive methods.
+\noindent As expected, adaptive methods improve the final test accuracy significantly for both BP and DFA. On average, DFA is still behind the BP, but with RMSProp and Adadelta, the gap is much smaller than with plain SGD, sometimes DFA's final test accuracy even exceeds BP. In other words, we can say that some adaptive methods help DFA more than BP. However, we should not ignore that DFA has larger fluctuations for the final test accuracy than BP. With the last experiment, we could close the gap between BP and DFA on the parity learning problem thanks to adaptive methods.
 
 \hypertarget{random-data-experiments}{%
 \section{Random Data Experiments}\label{random-data-experiments}}
 
 TODO: Report the random data experiments under this subtitle.
 
-\hypertarget{conclusion}{%
-\chapter*{Conclusion}\label{conclusion}}
+\hypertarget{chap:conc}{%
+\chapter*{Conclusion}\label{chap:conc}}
 \addcontentsline{toc}{chapter}{Conclusion}
 
 TODO: Start summarizing all the process theoretical foundations, problems and wrap up the results of the experiments. Write some possible future studies. Write the take-home messages.
@@ -724,7 +716,7 @@ TODO: Start summarizing all the process theoretical foundations, problems and wr
 \hypertarget{chap:appendix_a}{%
 \chapter{Backpropagation with Binary Cross-Entropy}\label{chap:appendix_a}}
 
-Let's consider a simple binary classification task. It is common to use a network with a single logistic output with the binary cross-entropy loss function and for the sake of simplicity, let's assume that there is only one hidden layer.
+Let's consider a simple binary classification task. It is common to use a network with a single logistic output with the binary cross-entropy (BCE) loss function and for the sake of simplicity, let's assume that there is only one hidden layer.
 \[
 \begin{aligned}
 BCE=-\sum_{i=1}^{n o u t}\left(y_i \log \left(\hat{y}_i \right)+\left(1-y_i\right) \log \left(1-\hat{y}_i\right)\right)
@@ -805,12 +797,12 @@ After having all these results, we can update the parameters (weights and biases
 \hypertarget{hidden-representation-of-digits-in-parity-problem}{%
 \chapter{Hidden Representation of Digits in Parity Problem}\label{hidden-representation-of-digits-in-parity-problem}}
 
-One of the interesting questions is: Does the network learn the digits individually when we train the network and make the necessary processes (summation, division), or does it memorize the way data is fed? We can answer this question by observing the hidden representation. If the network learns the digits well, we need to watch a good separation like the MNIST task. For this purpose, hidden representations of the networks trained with BP and DFA are plotted in two-dimensional space by using t-SNE \cite{vanDerMaaten2008} implementation of sklearn \cite{scikit-learn}.\\
+One of the interesting questions is: does the network learn the digits individually when we train it and make the necessary processes (summation, division), or does it memorize the way data is fed? We can answer this question by observing the hidden representation. If the network learns the digits well, we need to observe a good separation like the MNIST task. For this purpose, hidden representations of the networks trained with BP and DFA are plotted in two-dimensional space by using t-SNE \cite{vanDerMaaten2008} implementation of sklearn \cite{scikit-learn}.\\
 The hidden representation of a single image in \(k=3\) case is obtained in the following way; we know that after we flatten the images, particular parts of each image are multiplied by corresponding parts of the weight matrix. Getting these parts and performing multiplication for each digit will give us the hidden representation of the individual digit trained in \(k=3\) case. Process is visualized in \ref{fig:HiddenRepProcess}. Since the t-SNE is a computationally expensive process, only 7500 random samples are plotted from the dataset.
 
 \begin{figure}
 
-{\centering \includegraphics[width=0.6\linewidth]{figures/hidden_rep_process} 
+{\centering \includegraphics[width=0.6\linewidth]{figures/B_hidden_rep_process} 
 
 }
 
@@ -821,7 +813,7 @@ The hidden representation of a single image in \(k=3\) case is obtained in the f
 
 \begin{figure}
 
-{\centering \includegraphics[width=1\linewidth]{figures/tsne_BPDFA} 
+{\centering \includegraphics[width=1\linewidth]{figures/B_tsne_BPDFA} 
 
 }
 

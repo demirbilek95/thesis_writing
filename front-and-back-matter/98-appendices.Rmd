@@ -11,7 +11,7 @@ output:
 <!-- If you feel it necessary to include an appendix, it goes here. The first appendix should include the commands above. -->
 
 # Backpropagation with Binary Cross-Entropy {#chap:appendix_a}
-Let's consider a simple binary classification task. It is common to use a network with a single logistic output with the binary cross-entropy loss function and for the sake of simplicity, let's assume that there is only one hidden layer.
+Let's consider a simple binary classification task. It is common to use a network with a single logistic output with the binary cross-entropy (BCE) loss function and for the sake of simplicity, let's assume that there is only one hidden layer.
 $$
 \begin{aligned}
 BCE=-\sum_{i=1}^{n o u t}\left(y_i \log \left(\hat{y}_i \right)+\left(1-y_i\right) \log \left(1-\hat{y}_i\right)\right)
@@ -90,14 +90,14 @@ $$
 After having all these results, we can update the parameters (weights and biases) using gradient descent and its variants.
 
 # Hidden Representation of Digits in Parity Problem
-One of the interesting questions is: Does the network learn the digits individually when we train the network and make the necessary processes (summation, division), or does it memorize the way data is fed? We can answer this question by observing the hidden representation. If the network learns the digits well, we need to watch a good separation like the MNIST task. For this purpose, hidden representations of the networks trained with BP and DFA are plotted in two-dimensional space by using t-SNE \cite{vanDerMaaten2008} implementation of sklearn \cite{scikit-learn}.\
+One of the interesting questions is: does the network learn the digits individually when we train it and make the necessary processes (summation, division), or does it memorize the way data is fed? We can answer this question by observing the hidden representation. If the network learns the digits well, we need to observe a good separation like the MNIST task. For this purpose, hidden representations of the networks trained with BP and DFA are plotted in two-dimensional space by using t-SNE \cite{vanDerMaaten2008} implementation of sklearn \cite{scikit-learn}.\
 The hidden representation of a single image in $k=3$ case is obtained in the following way; we know that after we flatten the images, particular parts of each image are multiplied by corresponding parts of the weight matrix. Getting these parts and performing multiplication for each digit will give us the hidden representation of the individual digit trained in $k=3$ case. Process is visualized in \ref{fig:HiddenRepProcess}. Since the t-SNE is a computationally expensive process, only 7500 random samples are plotted from the dataset.
 ```{r HiddenRepProcess, fig.cap="Process of Hidden Representation", fig.align='center', out.width='60%', echo=FALSE}
-knitr::include_graphics("figures/hidden_rep_process.png")
+knitr::include_graphics("figures/B_hidden_rep_process.png")
 ```
 \noindent With this matrix multiplication, we have the hidden representation of each image. The rest is visualizing them by using the t-SNE. In figure \ref{fig:tSNEBPDFA} we can observe the results in two dimensions and say that the networks don't capture the information about the digits individually. They learn by memorizing the samples, not the digits.
 ```{r tSNEBPDFA, fig.cap="Hidden Representation of Digits in BP and DFA", fig.align='center', out.width='100%', echo=FALSE}
-knitr::include_graphics("figures/tsne_BPDFA.png")
+knitr::include_graphics("figures/B_tsne_BPDFA.png")
 ```
 
 # Reproducibility
