@@ -10,8 +10,9 @@
 
 \item[NTK] Neural Tangent Kernel.
 
-\item[t-SNE] t-Distributed Stochastic Neighbor Embedding.
-
 \item[SGD] Stochastic Gradient Descent.
 
 \item[NAG] Nesterov Accelerated Gradient.
+
+\item[t-SNE] t-Distributed Stochastic Neighbor Embedding.
+

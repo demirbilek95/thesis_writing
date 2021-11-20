@@ -18,7 +18,7 @@ BCE=-\sum_{i=1}^{n o u t}\left(y_i \log \left(\hat{y}_i \right)+\left(1-y_i\righ
 \end{aligned}
 $$
 
-Where $y$ is the ground truth and $\hat{y}$ is the output of the network. After having the loss function, let's continue with the forward pass.
+\noindent Where $y$ is the ground truth and $\hat{y}$ is the output of the network. After having the loss function, let's continue with the forward pass.
 
 $$
 \begin{aligned} 
@@ -27,7 +27,7 @@ h_k &= f(a_{k})
 \end{aligned}
 $$
 
-Where, $w_k$ is the weight, $b_{k}$ is the bias term, $h_k$ is the output of the layer (which means that $h_0 = X$ and $h_2 = \hat{y}$) and f is the non linear function. Please note that for last layer logistic function is used whereas for hidden layer reLU is used as non linear functions.\
+\noindent Where, $w_k$ is the weight, $b_{k}$ is the bias term, $h_k$ is the output of the layer (which means that $h_0 = X$ and $h_2 = \hat{y}$) and f is the non linear function. Please note that for last layer logistic function is used whereas for hidden layer reLU is used as non linear functions.\
 We can compute the derivative of the weights by using the chain rule.
 
 $$
@@ -63,7 +63,7 @@ $$
 \frac{\partial BCE}{\partial h_1} &= \frac{\partial BCE}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial a_{2}} \frac{\partial a_{2}}{\partial h_{1}}  \\
 &= \left(\hat{y}-y\right) w_{2}^T \\
 \frac{\partial h_1}{\partial a_{1}} &=f'(a_1) \\
-\frac{\partial a_{1}}{\partial h_{1}} &=X^T
+\frac{\partial a_{1}}{\partial w_{1}} &=X^T
 \end{aligned}
 $$
 This gives us:
@@ -95,7 +95,7 @@ The hidden representation of a single image in $k=3$ case is obtained in the fol
 ```{r HiddenRepProcess, fig.cap="Process of Hidden Representation", fig.align='center', out.width='60%', echo=FALSE}
 knitr::include_graphics("figures/B_hidden_rep_process.png")
 ```
-\noindent With this matrix multiplication, we have the hidden representation of each image. The rest is visualizing them by using the t-SNE. In figure \ref{fig:tSNEBPDFA} we can observe the results in two dimensions and say that the networks don't capture the information about the digits individually. They learn by memorizing the samples, not the digits.
+\noindent With this matrix multiplication, we have the hidden representation of each image. The rest is visualizing them by using the t-SNE. In figure \ref{fig:tSNEBPDFA} we can observe the results in two dimensions and say that the networks do not capture the information about the digits individually. They learn by memorizing the samples, not the digits.
 ```{r tSNEBPDFA, fig.cap="Hidden Representation of Digits in BP and DFA", fig.align='center', out.width='100%', echo=FALSE}
 knitr::include_graphics("figures/B_tsne_BPDFA.png")
 ```
