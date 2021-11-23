@@ -1,13 +1,13 @@
-This is where you will normally thank your advisor, colleagues, family and friends, as well as funding and institutional support. In our case, we will give our praises to the people who developed the ideas and tools that allow us to push open science a little step forward by writing plain-text, transparent, and reproducible theses in R Markdown. 
-
-We must be grateful to John Gruber for inventing the original version of Markdown, to John MacFarlane for creating Pandoc (<http://pandoc.org>) which converts Markdown to a large number of output formats, and to Yihui Xie for creating `knitr` which introduced R Markdown as a way of embedding code in Markdown documents, and `bookdown` which added tools for technical and longer-form writing.
-
-Special thanks to [Chester Ismay](http://chester.rbind.io), who created the `thesisdown` package that helped many a PhD student write their theses in R Markdown. And a very special thanks to John McManigle, whose adaption of Sam Evans' adaptation of Keith Gillow's original maths template for writing an Oxford University DPhil thesis in LaTeX provided the template that I in turn adapted for R Markdown.
-
-Finally, profuse thanks to JJ Allaire, the founder and CEO of [RStudio](http://rstudio.com), and Hadley Wickham, the mastermind of the tidyverse without whom we'd all just given up and done data science in Python instead. Thanks for making data science easier, more accessible, and more fun for us all.
+Without the support of many people, I would not be able to finish this study. I am too grateful for their contribution and owe big thanks to all of them.\
+I want to thank the creators of the tools that I have used for the thesis. The internet is full of information, but it is tough to find good quality. I can not count how many times I used those sources; special thanks to those who created great content and made them accessible.\
+Sometimes, you can not find the problem about your implementation, but sharing remarkable ideas with other colleagues may open another perspective on the problem. Hence, I want to start by thanking all the members of the Goldt Lab and Data Science and Scientific Computing (DSSC) master program from the University of Trieste.\
+Thanks to the lectures that I had from DSSC, I was comfortable enough to move on with this topic, so I want to present my appreciation to all professors of DSSC.\
+All the process was crystal clear and organized, starting from our first meeting. I learned too much from him, and without his invaluable support, I could not finish this study on time. Therefore, special thanks to the head of the Goldt Lab and my supervisor, Sebastian. \
+I must be grateful to all of my friends for helping me maintain social bonds that nowadays we realize how important it is. Thanks to their friendship, I was able to study more efficiently.\
+Finally, I want to present the last but enormous thanks to my family. They are always there when I need motivation or when I struggle with a problem.
 
 \begin{flushright}
-Ulrik Lyngs \\
-Linacre College, Oxford \\
-2 December 2018
+Dogan Can Demirbilek \\
+University of Trieste, Trieste \\
+17 December 2021
 \end{flushright}

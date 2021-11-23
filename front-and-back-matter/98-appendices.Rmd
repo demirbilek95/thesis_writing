@@ -1,4 +1,11 @@
+`r if(knitr:::is_latex_output()) '\\startappendices'`
+
+`r if(!knitr:::is_latex_output()) '# (APPENDIX) Appendix {-}'` 
+
+<!-- If you feel it necessary to include an appendix, it goes here. The first appendix should include the commands above. -->
+
 # Backpropagation with Binary Cross-Entropy {#chap:appendix_a}
+Following calculations are heavily inspired from these notes^[https://www.ics.uci.edu/~pjsadows/notes.pdf]. The notation and the general structure might be different, but the idea is the same.\
 Let us consider a simple binary classification task. It is common to use a network with a single logistic output with the binary cross-entropy loss function and for the sake of simplicity, let us assume that there is only one hidden layer.
 $$
 \begin{aligned}
@@ -79,7 +86,7 @@ After having all these results, we can update the parameters (weights and biases
 
 # Hidden Representation of Digits in Parity Problem
 One of the interesting questions is: Does the network learn the digits individually when we train the network and make the necessary processes (summation, division), or does it memorize the way data is fed? We can answer this question by observing the hidden representation. If the network learns the digits well, we need to watch a good separation like the MNIST task. For this purpose, hidden representations of the networks trained with BP and DFA are plotted in two-dimensional space by using t-SNE \cite{vanDerMaaten2008} implementation of sklearn \cite{scikit-learn}.\
-The hidden representation of a single image in $k=3$ case is obtained in the following way; we know that after we flatten the images, particular parts of each image are multiplied by corresponding parts of the weight matrix. Getting these parts and performing multiplication for each digit will give us the hidden representation of the individual digit trained in $k=3$ case. Process is visualized in \ref{fig:HiddenRepProcess}. Since the t-SNE is a computationally expensive process, only 7500 random samples are plotted from the dataset.
+The hidden representation of a single image in the $k=3$ case is obtained in the following way; we know that after we flatten the images, particular parts of each image are multiplied by corresponding parts of the weight matrix. Getting these parts and performing multiplication for each digit will reveal the hidden representation of the individual digit trained in the $k=3$ case. Process is visualized in \ref{fig:HiddenRepProcess}. Since the t-SNE is a computationally expensive process, only 7500 random samples are plotted from the dataset.
 ```{r HiddenRepProcess, fig.cap="Process of Hidden Representation", fig.align='center', out.width='60%', echo=FALSE}
 knitr::include_graphics("figures/B_hidden_rep_process.png")
 ```
@@ -89,4 +96,7 @@ knitr::include_graphics("figures/B_tsne_BPDFA.png")
 ```
 
 # Reproducibility
-TODO: Write down the library versions, refer to the Github repository for the experiments, give information about the hardware. Explain the stochastic behavior of data.
+For reproducing the experiment results, please refer to this Github repository^[https://github.com/demirbilek95/Dynamics-of-Learning]. It contains all the codes that are used to have the experiment results. It also includes the requirements to run the code. However, due to the stochastic behavior of the neural networks and the data, results will not be the same. Nevertheless, on average, it must be very close to the ones that are presented. The neural network weights are sampled from a uniform distribution so that each instance will be slightly different. Given the parameter $k$, the parity data is sampled uniformly from MNIST and horizontally stacked. In addition to this, at each epoch, it is recreated, and we had a different dataset. The random data also follows the stochastic behavior. The labels of the clusters are assigned randomly, and the cluster samples are distributed from a uniform distribution (it is explained detailly in \ref{chap:chapter_2}). It is also recreated at each repetition.\
+Hyperparameters used in the experiments can be found in the Github repository, and the process of how they are tuned or which value they are set is explained in the related chapters.\
+Lastly, a local computer is used for all the experiments, and all the experiments are performed on GPU (Nvidia GTX 960M).
+
