@@ -18,7 +18,7 @@ knit: (function(input, ...) {
 #####################
 title: |
   Dynamics of Learning Beyond Stochastic Gradient Descent \
-author: Doğan Can Demirbilek
+author: Dogan Can Demirbilek
 #college: Your College
 university: University of Trieste
 university-logo: figures/logo.jpeg
