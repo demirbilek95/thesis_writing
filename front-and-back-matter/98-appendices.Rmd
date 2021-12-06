@@ -5,14 +5,13 @@
 <!-- If you feel it necessary to include an appendix, it goes here. The first appendix should include the commands above. -->
 
 # Backpropagation with Binary Cross-Entropy {#chap:appendix_a}
-Following calculations are heavily inspired from these notes^[https://www.ics.uci.edu/~pjsadows/notes.pdf]. The notation and the general structure might be different, but the idea is the same.\
+Following calculations are heavily inspired from these notes^[https://www.ics.uci.edu/~pjsadows/notes.pdf]. The notation and the general structure might differ, but the idea is the same.\
 Let us consider a simple binary classification task. It is common to use a network with a single logistic output with the binary cross-entropy loss function and for the sake of simplicity, let us assume that there is only one hidden layer.
 $$
 \begin{aligned}
 BCE=-\sum_{i=1}^{n o u t}\left(y_i \log \left(\hat{y}_i \right)+\left(1-y_i\right) \log \left(1-\hat{y}_i\right)\right)
 \end{aligned}
 $$
-
 \noindent Where $y$ is the ground truth and $\hat{y}$ is the output of the network. After having the loss function, let us continue with the forward pass.
 
 $$
@@ -21,7 +20,6 @@ a_{k} &= h_{k-1} w_{k} + b_k \\
 h_k &= f(a_{k})
 \end{aligned}
 $$
-
 \noindent Where, $w_k$ is the weight, $b_{k}$ is the bias term, $h_k$ is the output of the layer (which means that $h_0 = X$ and $h_2 = \hat{y}$) and f is the non linear function. Please note that for last layer logistic function is used whereas for hidden layer reLU is used as non linear functions.\
 We can compute the derivative of the weights by using the chain rule.
 
@@ -30,7 +28,6 @@ $$
 \frac{\partial BCE}{\partial w_{2}}=\frac{\partial BCE}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial a_{2}} \frac{\partial a_{2}}{\partial w_{2}}
 \end{aligned}
 $$
-
 \noindent Computing each factor in the term, we have:
 $$
 \begin{aligned}
@@ -84,18 +81,21 @@ $$
 $$
 After having all these results, we can update the parameters (weights and biases) using gradient descent and its variants.
 
-# Hidden Representation of Digits in MNIST-Parity Problem {#chap:appendix_b}
-One of the interesting questions is that is not directly related to the predictive power of the algorithms: Does the network learn the digits individually when we train the network for the MNIST-Parity task and make the necessary processes (summation, division), or does it memorize the way data is fed? We can answer this question by observing the hidden representation. If the network learns the digits well, we need to observe a good separation like the standard MNIST task (classifying hand digits). For this purpose, hidden representations of the networks trained with BP and DFA are plotted in two-dimensional space by using t-SNE \cite{vanDerMaaten2008} using the implementation of sklearn \cite{scikit-learn}.\
-The hidden representation of a single image in the $k=3$ case is obtained in the following way; we know that after we flatten the images, particular parts of each image are multiplied by corresponding parts of the weight matrix. Getting these parts and performing multiplication for each digit will reveal the hidden representation of the individual digit trained in the $k=3$ case. Process is visualized in figure \ref{fig:HiddenRepProcess}. After extracting the pixels of each image and the corresponding weights, we end up with the following matrix multiplication: $[\text{Batch Size} \times 784] [784 \space \times \space \text{Hidden Layer}]$ where $784$ is $28 \times 28$ and $28$ is the pixel size of a single digit. With this matrix multiplication, we have the hidden representation of each image. 
-```{r HiddenRepProcess, fig.scap="Process of Extracting the Hidden Representation of Single Digit ", fig.cap="\\textbf{Process of Extracting the Hidden Representation of Single Digit } \\newline After extracting the digits and the corresponding weights. The matrix multiplication (same color) for each digit are performed separately ($28$ is the pixel size of a single digit); by doing so, we have the hidden representation of a single image from the network trained for parities of the sum of three digits.", fig.align='center', out.width='100%', echo=FALSE} 
-knitr::include_graphics("figures/B_hidden_rep_process.png")
+# Direct Feedback Alignment with Various Learning Rates
+We have mentioned that DFA is highly sensitive to the learning rate throughout the experiments. We want to support this argument with some plots. For this purpose, we plotted validation accuracy for each learning rate value during the hyperparameter tuning of different random matrices. The networks are trained for the MNIST-Parity task for the case $k=3$ with SGD up to $20$ epochs.
+```{r BinitWDifferentLR, fig.scap="Various Random Matrix Initialization with Different Learning Rates", fig.cap="\\textbf{Various Random Matrix Initialization with Different Learning Rates} \\newline The predictive power of DFA with various random matrix initializations on MNIST-Parity task. The model tries to predict the parities of the sum of three digits and it is trained with SGD. The random matrices are initialized as the following: $\\text{standard uniform} \\sim U(0,1)$, $\\text{uniform} \\sim U(-a,+a)$, $\\text{standard gaussian} \\sim \\mathcal{N}\\left(0, 1\\right)$ and $\\text{gaussian} \\sim \\mathcal{N}\\left(a, a \\right)$ where $a= \\frac{1}{\\sqrt{input dim}}$.", fig.align='center', out.width='100%', echo=FALSE} 
+knitr::include_graphics("figures/B_k3_SGD_DFA_BInitsWDifferentlrs.png")
 ```
-\noindent After performing the matrix multiplication, the rest is visualizing these hidden representations by using the t-SNE. Since the t-SNE is a computationally expensive process, only 7500 random samples are plotted from the dataset. In figure \ref{fig:tSNEBPDFA} we can observe the results in two dimensions and say that the networks do not capture the information about the digits individually when they are trained for parities of the sum of three digits. They learn different properties of the data, not the digits individually. However, for the same purpose, transfer learning can be implemented to test if these networks trained for the parity problem can classify the digits accurately. Transfer learning is a method that involves storing the information gained while solving a problem and using this information on a different, but related problem \cite{DBLP:journals/corr/JhaS15}. Also, the same experiment can be performed for deeper networks. Maybe deeper representations of the parities might contain information about the digits individually. On the other hand, it is not surprising that BP and DFA capture very similar information from the MNIST-parity dataset.
-```{r tSNEBPDFA, fig.scap="Hidden Representation of Digits in BP and DFA", fig.cap="\\textbf{Hidden Representation of Digits in BP and DFA} \\newline Hidden representations of images with their labels for BP and DFA. The process of acquiring these representations are explained in \\ref{fig:HiddenRepProcess}.", fig.align='center', out.width='100%', echo=FALSE}
-knitr::include_graphics("figures/B_tsne_BPDFA.png")
+\noindent The result can be observed in figure \ref{fig:BinitWDifferentLR}. We can see that some high learning rate values do not even provide performance beyond a random guess as in the standard uniform random matrix. For the gaussian random matrix, if we have a high learning rate, we can observe increasing accuracy and a rapid decrease later. These patterns may also happen with other initializations, even with adaptive methods. We suggest decreasing the learning rate to have more stable patterns in these cases.\
+We performed the same process for adaptive methods. Again, the networks are trained for the MNIST-Parity task for the case $k=3$ up to $20$ epochs. The results for the adaptive methods can be observed in figure \ref{fig:AdaptiveWDifferentLR}.
+```{r AdaptiveWDifferentLR, fig.scap="Various Adaptive Methods with Different Learning Rates", fig.cap="\\textbf{Various Adaptive Methods with Different Learning Rates} \\newline The predictive power of DFA is presented with adaptive methods on the MNIST-Parity task. Random matrices are initialized uniformly. The model tries to predict the parities of the sum of three digits with different learning rates.", fig.align='center', out.width='100%', echo=FALSE} 
+knitr::include_graphics("figures/B_k3_All_DFA_optimsWDifferentlrs.png")
 ```
+\noindent We can see that adaptive methods are more robust than plain SGD. However, similar to the previous plot, it is possible to observe comparable patterns. Indeed, Adadelta draws a zig-zag pattern with a high learning rate. 
+
+<!-- # Extra Runs For Synthetic Data
+TODO: Maybe add different runs to here to show that, results are highly different for different distributions.-->
 
 # Reproducibility
-For reproducing the experiment results, please refer to this Github repository^[https://github.com/demirbilek95/Dynamics-of-Learning]. It contains all the codes that are used to have the experiment results. It also includes the requirements to run the code. However, due to the stochastic behavior of the neural networks and the data, results will not be precisely the same. Nevertheless, on average, it must be very close to the ones that are presented. The neural network weights are sampled from a uniform distribution so that each instance will be slightly different. Given the parameter $k$, the parity data is sampled uniformly from MNIST and horizontally stacked. In addition to this, at each epoch, it is recreated, and we had a different dataset. Although we used a fixed distribution, the synthetic data also follows stochastic behavior. The labels of the clusters are assigned randomly, and the cluster samples are distributed from a uniform distribution (it is explained detailly in \ref{chap:chapter_2}). The distribution of the first two dimensions is plotted with experiments. Other distributions would give different results. Hyperparameters used in the experiments can be found in the Github repository, and the process of how they are tuned or which value they are set is explained in the related chapters.\
+For reproducing the experiment results, please refer to this Github repository^[https://github.com/demirbilek95/Dynamics-of-Learning]. It contains all the codes that are used to have the experiment results. It also includes the requirements to run the code. However, due to the stochastic behavior of the neural networks and the data, results will not be precisely the same. Nevertheless, it must be very close to the presented ones on average. Stochastic behaviors can be explained as the following: The neural network weights and the random matrix (for DFA) are sampled from a uniform distribution so that each instance will be slightly different. Given the parameter $k$, the parity data is sampled uniformly from the MNIST dataset. In addition to this, it is recreated for each epoch, so we had a different dataset at every iteration. DFA is extremely sensitive to the learning rate, so occasionally, overfitting might be observed, meaning that validation accuracy might decrease instantly in the middle of training. For overcoming this issue, we suggest decreasing the learning rate. Although we used a fixed distribution, the synthetic data also follows stochastic behavior. The labels of the clusters are assigned randomly, and the cluster samples are distributed from a uniform distribution (it is explained detailly in \ref{chap:chapter_2}). The distribution of the first two dimensions is plotted with experiments. Other distributions would give different results. Hyperparameters used in the experiments can be found in the Github repository, and the process of how they are tuned or which value they are set is explained in the related chapters.\
 Lastly, a local computer is used for all the experiments, and all the experiments are performed on GPU (Nvidia GTX 960M).
-
