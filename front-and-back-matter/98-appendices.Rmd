@@ -34,12 +34,12 @@ $$
 \frac{\partial BCE}{\partial \hat{y}} &=\frac{-y}{\hat{y}}+\frac{1-y}{1-\hat{y}} \\
 &=\frac{\hat{y}-y}{\hat{y}\left(1-\hat{y}\right)} \\
 \frac{\partial \hat{y}}{\partial a_{2}} &=\hat{y}\left(1-\hat{y}\right) \\
-\frac{\partial a_{2}}{\partial w_{2}} &=h_{1}^T
+\frac{\partial a_{2}}{\partial w_{2}} &=h_{1}
 \end{aligned}
 $$
 This expression gives us:
 $$
-\frac{\partial BCE}{\partial w_{2}}=h_{1}^T\left(\hat{y}-y\right)
+\frac{\partial BCE}{\partial w_{2}}=\left(\hat{y}-y\right)h_{1}
 $$
 We can calculate the derivative of the $w_1$ concerning loss function as the following:
 
@@ -53,15 +53,15 @@ Compute each factor in the term again, we have:
 $$
 \begin{aligned}
 \frac{\partial BCE}{\partial h_1} &= \frac{\partial BCE}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial a_{2}} \frac{\partial a_{2}}{\partial h_{1}}  \\
-&= \left(\hat{y}-y\right) w_{2}^T \\
+&= \left(\hat{y}-y\right) w_{2} \\
 \frac{\partial h_1}{\partial a_{1}} &=f'(a_1) \\
-\frac{\partial a_{1}}{\partial h_{1}} &=X^T
+\frac{\partial a_{1}}{\partial h_{1}} &=X
 \end{aligned}
 $$
 This expression gives us:
 $$
 \begin{aligned}
-\frac{\partial BCE}{\partial w_{1}}= \left(X\right)^T\left(\hat{y}-y\right)\left(w_{2}^T\right) \odot f'(a_1)
+\frac{\partial BCE}{\partial w_{1}}= \left(X\right)\left(\hat{y}-y\right)\left(w_{2}\right) \odot f'(a_1)
 \end{aligned}
 $$
 Where $\odot$ is element-wise multiplication, similarly, bias terms can be calculated by following:
@@ -76,13 +76,13 @@ $$
 $$
 \begin{aligned} 
 \frac{\partial BCE}{\partial b_{1}}&=\frac{\partial BCE}{\partial h_1} \frac{\partial h_1}{\partial a_{1}} \frac{\partial a_{1}}{\partial b_{1}} \\
-&= \left(\hat{y}-y\right)\left(w_{2}^T\right) \odot f'(a_1)
+&= \left(\hat{y}-y\right)\left(w_{2}\right) \odot f'(a_1)
 \end{aligned}
 $$
 After having all these results, we can update the parameters (weights and biases) using gradient descent and its variants.
 
-# Direct Feedback Alignment with Various Learning Rates
-We have mentioned that DFA is highly sensitive to the learning rate throughout the experiments. We want to support this argument with some plots. For this purpose, we plotted validation accuracy for each learning rate value during the hyperparameter tuning of different random matrices. The networks are trained for the MNIST-Parity task for the case $k=3$ with SGD up to $20$ epochs.
+# Direct Feedback Alignment with Various Learning Rates {#chap:appendix_b}
+We have mentioned that DFA is highly sensitive to the learning rate throughout the experiments. We want to support this argument with some plots. For this purpose, we plotted test accuracy for each learning rate value during the hyperparameter tuning of different random matrices. The networks are trained for the MNIST-Parity task for the case $k=3$ with SGD up to $20$ epochs.
 ```{r BinitWDifferentLR, fig.scap="Various Random Matrix Initialization with Different Learning Rates", fig.cap="\\textbf{Various Random Matrix Initialization with Different Learning Rates} \\newline The predictive power of DFA with various random matrix initializations on MNIST-Parity task. The model tries to predict the parities of the sum of three digits and it is trained with SGD. The random matrices are initialized as the following: $\\text{standard uniform} \\sim U(0,1)$, $\\text{uniform} \\sim U(-a,+a)$, $\\text{standard gaussian} \\sim \\mathcal{N}\\left(0, 1\\right)$ and $\\text{gaussian} \\sim \\mathcal{N}\\left(a, a \\right)$ where $a= \\frac{1}{\\sqrt{input dim}}$.", fig.align='center', out.width='100%', echo=FALSE} 
 knitr::include_graphics("figures/B_k3_SGD_DFA_BInitsWDifferentlrs.png")
 ```
@@ -91,11 +91,8 @@ We performed the same process for adaptive methods. Again, the networks are trai
 ```{r AdaptiveWDifferentLR, fig.scap="Various Adaptive Methods with Different Learning Rates", fig.cap="\\textbf{Various Adaptive Methods with Different Learning Rates} \\newline The predictive power of DFA is presented with adaptive methods on the MNIST-Parity task. Random matrices are initialized uniformly. The model tries to predict the parities of the sum of three digits with different learning rates.", fig.align='center', out.width='100%', echo=FALSE} 
 knitr::include_graphics("figures/B_k3_All_DFA_optimsWDifferentlrs.png")
 ```
-\noindent We can see that adaptive methods are more robust than plain SGD. However, similar to the previous plot, it is possible to observe comparable patterns. Indeed, Adadelta draws a zig-zag pattern with a high learning rate. 
-
-<!-- # Extra Runs For Synthetic Data
-TODO: Maybe add different runs to here to show that, results are highly different for different distributions.-->
+\noindent We can see that adaptive methods are more robust than plain SGD. However, similar to the previous plot, it is possible to observe comparable patterns. Indeed, Adadelta draws a zig-zag pattern with a high learning rate.
 
 # Reproducibility
-For reproducing the experiment results, please refer to this Github repository^[https://github.com/demirbilek95/Dynamics-of-Learning]. It contains all the codes that are used to have the experiment results. It also includes the requirements to run the code. However, due to the stochastic behavior of the neural networks and the data, results will not be precisely the same. Nevertheless, it must be very close to the presented ones on average. Stochastic behaviors can be explained as the following: The neural network weights and the random matrix (for DFA) are sampled from a uniform distribution so that each instance will be slightly different. Given the parameter $k$, the parity data is sampled uniformly from the MNIST dataset. In addition to this, it is recreated for each epoch, so we had a different dataset at every iteration. DFA is extremely sensitive to the learning rate, so occasionally, overfitting might be observed, meaning that validation accuracy might decrease instantly in the middle of training. For overcoming this issue, we suggest decreasing the learning rate. Although we used a fixed distribution, the synthetic data also follows stochastic behavior. The labels of the clusters are assigned randomly, and the cluster samples are distributed from a uniform distribution (it is explained detailly in \ref{chap:chapter_2}). The distribution of the first two dimensions is plotted with experiments. Other distributions would give different results. Hyperparameters used in the experiments can be found in the Github repository, and the process of how they are tuned or which value they are set is explained in the related chapters.\
+For reproducing the experiment results, please refer to this Github repository^[https://github.com/demirbilek95/Dynamics-of-Learning]. It contains all the codes that are used to have the experiment results. It also includes the requirements to run the code. However, due to the stochastic behavior of the neural networks and the data, results will not be precisely the same. Nevertheless, it must be very close to the presented ones on average. Stochastic behaviors can be explained as the following: The neural network weights and the random matrix (for DFA) are sampled from a uniform distribution so that each instance will be slightly different. Given the parameter $k$, the parity data is sampled uniformly from the MNIST dataset. In addition to this, it is recreated for each epoch, so we had a different dataset at every iteration. DFA is extremely sensitive to the learning rate, so occasionally, overfitting might be observed, meaning that test accuracy might decrease instantly in the middle of training. For overcoming this issue, we suggest decreasing the learning rate. Although we used a fixed distribution, the synthetic data also follows stochastic behavior. The labels of the clusters are assigned randomly, and the cluster samples are distributed from a uniform distribution (it is explained detailly in \ref{chap:chapter_2}). The distribution of the first two dimensions is plotted with experiments. Other distributions would give different results. Hyperparameters used in the experiments can be found in the Github repository, and the process of how they are tuned or which value they are set is explained in the related chapters.\
 Lastly, a local computer is used for all the experiments, and all the experiments are performed on GPU (Nvidia GTX 960M).
